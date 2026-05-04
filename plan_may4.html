@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sam's Transformation Plan — May 4 Reset</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#0a0a0a;--surface:#111111;--surface2:#1a1a1a;--border:rgba(255,255,255,0.07);
+    --border2:rgba(255,255,255,0.13);--text:#f0ede8;--muted:#888;--faint:#3a3a3a;
+    --green:#b8f5a0;--green-dim:rgba(184,245,160,0.11);
+    --blue:#7ec8f5;--blue-dim:rgba(126,200,245,0.1);
+    --amber:#f5c842;--amber-dim:rgba(245,200,66,0.1);
+    --red:#f56f6f;--red-dim:rgba(245,111,111,0.1);
+    --purple:#c8a8f5;--purple-dim:rgba(200,168,245,0.1);
+    --orange:#f5a060;--orange-dim:rgba(245,160,96,0.1);
+    --teal:#5ef0d8;--teal-dim:rgba(94,240,216,0.1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.6;min-height:100vh;}
+
+  .header{padding:2.5rem 2rem 1.75rem;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+  .header::before{content:'';position:absolute;top:-80px;right:-80px;width:360px;height:360px;background:radial-gradient(circle,rgba(184,245,160,0.05) 0%,transparent 70%);pointer-events:none;}
+  .header-top{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.25rem;}
+  .header-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(38px,7vw,72px);line-height:0.9;letter-spacing:1px;}
+  .header-title span{color:var(--green);}
+  .header-meta{text-align:right;color:var(--muted);font-size:11px;font-family:'DM Mono',monospace;}
+  .header-meta strong{color:var(--text);display:block;font-size:13px;}
+  .reset-badge{display:inline-flex;align-items:center;gap:6px;background:var(--amber-dim);border:1px solid rgba(245,200,66,0.3);border-radius:5px;padding:4px 10px;font-family:'DM Mono',monospace;font-size:10px;color:var(--amber);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px;}
+  .stats-row{display:flex;gap:8px;flex-wrap:wrap;}
+  .stat-chip{background:var(--surface2);border:1px solid var(--border2);border-radius:6px;padding:7px 13px;font-size:11px;font-family:'DM Mono',monospace;}
+  .stat-chip .val{color:var(--green);font-size:14px;font-weight:500;display:block;}
+
+  .nav{display:flex;gap:2px;padding:1rem 2rem 0;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;}
+  .nav::-webkit-scrollbar{display:none;}
+  .nav-btn{background:none;border:none;cursor:pointer;color:var(--muted);font-family:'DM Mono',monospace;font-size:11px;padding:8px 14px 10px;border-bottom:2px solid transparent;white-space:nowrap;transition:color 0.15s,border-color 0.15s;text-transform:uppercase;letter-spacing:0.5px;}
+  .nav-btn:hover{color:var(--text);}
+  .nav-btn.active{color:var(--green);border-bottom-color:var(--green);}
+
+  .content{padding:1.5rem 2rem 3rem;}
+  .pane{display:none;}
+  .pane.active{display:block;}
+
+  .week-selector{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:1.25rem;}
+  .wk-btn{background:var(--surface2);border:1px solid var(--border);border-radius:4px;color:var(--muted);font-family:'DM Mono',monospace;font-size:10px;padding:5px 9px;cursor:pointer;transition:all 0.12s;text-transform:uppercase;}
+  .wk-btn:hover{border-color:var(--border2);color:var(--text);}
+  .wk-btn.active{background:var(--green-dim);border-color:var(--green);color:var(--green);}
+  .wk-btn.ph2.active{background:var(--blue-dim);border-color:var(--blue);color:var(--blue);}
+  .wk-btn.ph3.active{background:var(--amber-dim);border-color:var(--amber);color:var(--amber);}
+  .wk-btn.ph4.active{background:var(--red-dim);border-color:var(--red);color:var(--red);}
+  .wk-btn.ph5.active{background:var(--purple-dim);border-color:var(--purple);color:var(--purple);}
+
+  .phase-banner{border-radius:8px;padding:12px 16px;margin-bottom:1.25rem;display:flex;align-items:center;gap:12px;}
+  .pb-green{background:var(--green-dim);border:1px solid rgba(184,245,160,0.2);}
+  .pb-blue{background:var(--blue-dim);border:1px solid rgba(126,200,245,0.2);}
+  .pb-amber{background:var(--amber-dim);border:1px solid rgba(245,200,66,0.2);}
+  .pb-red{background:var(--red-dim);border:1px solid rgba(245,111,111,0.2);}
+  .pb-purple{background:var(--purple-dim);border:1px solid rgba(200,168,245,0.2);}
+  .pb-num{font-family:'Bebas Neue',sans-serif;font-size:38px;line-height:1;}
+  .pb-green .pb-num{color:var(--green);}.pb-blue .pb-num{color:var(--blue);}.pb-amber .pb-num{color:var(--amber);}.pb-red .pb-num{color:var(--red);}.pb-purple .pb-num{color:var(--purple);}
+  .pb-name{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;}
+  .pb-desc{font-size:12px;color:var(--muted);margin-top:1px;}
+
+  .week-ribbon{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:1.25rem;}
+  .wr-day{background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:6px 3px;text-align:center;font-size:10px;font-family:'DM Mono',monospace;}
+  .wr-day .wr-d{color:var(--muted);margin-bottom:1px;font-size:9px;}
+  .wr-day .wr-dt{font-size:12px;color:var(--text);margin-bottom:1px;}
+  .wr-day .wr-t{font-weight:500;font-size:9px;}
+  .wr-strength .wr-t{color:var(--blue);}.wr-cardio .wr-t{color:var(--green);}.wr-sport .wr-t{color:var(--purple);}
+  .wr-rest .wr-t{color:var(--faint);}.wr-active .wr-t{color:var(--amber);}.wr-full .wr-t{color:var(--orange);}
+
+  .days-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:11px;}
+  .day-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:border-color 0.15s;}
+  .day-card:hover{border-color:var(--border2);}
+  .day-card-head{padding:11px 13px 9px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+  .day-num{font-family:'Bebas Neue',sans-serif;font-size:26px;line-height:1;color:var(--faint);margin-right:8px;}
+  .day-info{flex:1;}
+  .day-name{font-weight:500;font-size:13px;}
+  .day-date{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;}
+  .day-type-badge{font-size:10px;font-family:'DM Mono',monospace;padding:3px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:0.3px;font-weight:500;white-space:nowrap;}
+  .badge-strength{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(126,200,245,0.2);}
+  .badge-cardio{background:var(--green-dim);color:var(--green);border:1px solid rgba(184,245,160,0.2);}
+  .badge-sport{background:var(--purple-dim);color:var(--purple);border:1px solid rgba(200,168,245,0.2);}
+  .badge-rest{background:rgba(255,255,255,0.04);color:var(--muted);border:1px solid var(--border);}
+  .badge-active{background:var(--amber-dim);color:var(--amber);border:1px solid rgba(245,200,66,0.2);}
+  .badge-full{background:var(--orange-dim);color:var(--orange);border:1px solid rgba(245,160,96,0.2);}
+  .badge-deload{background:var(--teal-dim);color:var(--teal);border:1px solid rgba(94,240,216,0.2);}
+
+  .day-card-body{padding:10px 13px 12px;}
+  .session-name{font-size:13px;font-weight:500;color:var(--text);margin-bottom:3px;}
+  .session-detail{font-size:11px;color:var(--muted);margin-bottom:8px;line-height:1.5;}
+  .exercise-list{list-style:none;}
+  .exercise-list li{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);font-size:12px;}
+  .exercise-list li:last-child{border-bottom:none;}
+  .ex-name{color:var(--text);}
+  .ex-sets{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);white-space:nowrap;margin-left:8px;}
+
+  .nut-day-table{width:100%;border-collapse:collapse;margin-top:6px;}
+  .nut-day-table th{font-size:9px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.4px;color:var(--muted);padding:4px 6px;border-bottom:1px solid var(--border);text-align:left;}
+  .nut-day-table td{padding:5px 6px;border-bottom:1px solid var(--border);font-size:11px;vertical-align:top;}
+  .nut-day-table tr:last-child td{border-bottom:none;}
+  .nut-day-table tr:hover td{background:var(--surface2);}
+  .meal-time{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);white-space:nowrap;}
+  .meal-eat{color:var(--text);}
+  .meal-prot{font-family:'DM Mono',monospace;font-size:10px;color:var(--amber);white-space:nowrap;}
+  .day-total-row td{background:var(--surface2);font-weight:500;font-size:11px;}
+
+  .rest-card-body{padding:14px 13px;display:flex;align-items:flex-start;gap:10px;}
+  .rest-text{font-size:12px;color:var(--muted);}
+  .rest-text strong{color:var(--text);display:block;font-size:13px;margin-bottom:3px;}
+
+  .sec-heading{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1px;color:var(--muted);text-transform:uppercase;margin-bottom:10px;margin-top:1.5rem;}
+  .sec-heading:first-child{margin-top:0;}
+  .divider{height:1px;background:var(--border);margin:1.5rem 0;}
+  .info-block{background:var(--surface2);border-radius:8px;padding:10px 14px;margin-bottom:8px;font-size:13px;color:var(--muted);line-height:1.7;}
+  .info-block strong{color:var(--text);font-weight:500;}
+
+  .rule-list{list-style:none;display:flex;flex-direction:column;gap:7px;margin-bottom:1.25rem;}
+  .rule-item{display:flex;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:10px 13px;font-size:13px;}
+  .rule-item.warn{border-color:rgba(245,111,111,0.25);background:var(--red-dim);}
+  .rule-item.tip{border-color:rgba(184,245,160,0.2);background:var(--green-dim);}
+  .rule-item.info{border-color:rgba(126,200,245,0.2);background:var(--blue-dim);}
+  .rule-item.deload{border-color:rgba(94,240,216,0.2);background:var(--teal-dim);}
+  .rule-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+  .warn .rule-dot{background:var(--red);}.tip .rule-dot{background:var(--green);}.info .rule-dot{background:var(--blue);}.deload .rule-dot{background:var(--teal);}
+  .rule-item strong{color:var(--text);font-weight:500;}
+
+  .milestones{max-width:700px;}
+  .milestone{display:flex;gap:14px;margin-bottom:2rem;}
+  .ml-left{display:flex;flex-direction:column;align-items:center;}
+  .ml-dot{width:13px;height:13px;border-radius:50%;flex-shrink:0;border:2px solid;}
+  .ml-dot-green{background:var(--green-dim);border-color:var(--green);}
+  .ml-dot-blue{background:var(--blue-dim);border-color:var(--blue);}
+  .ml-dot-amber{background:var(--amber-dim);border-color:var(--amber);}
+  .ml-dot-red{background:var(--red-dim);border-color:var(--red);}
+  .ml-dot-purple{background:var(--purple-dim);border-color:var(--purple);}
+  .ml-line{width:1px;background:var(--border);flex:1;margin:4px 0;}
+  .ml-phase{font-size:10px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:5px;}
+  .ml-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:0.5px;margin-bottom:7px;}
+  .ml-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+  .ml-item{background:var(--surface2);border-radius:6px;padding:7px 9px;}
+  .ml-item-label{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;}
+  .ml-item-val{font-size:12px;font-weight:500;margin-top:1px;}
+
+  .lift-table{width:100%;border-collapse:collapse;max-width:750px;}
+  .lift-table th{text-align:left;padding:7px 10px;font-size:10px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);border-bottom:1px solid var(--border);}
+  .lift-table td{padding:9px 10px;border-bottom:1px solid var(--border);font-size:12px;}
+  .lift-table tr:last-child td{border-bottom:none;}
+  .lift-table tr:hover td{background:var(--surface2);}
+  .prog-bar{height:4px;background:var(--border);border-radius:2px;margin-top:4px;min-width:70px;}
+  .prog-fill{height:4px;border-radius:2px;}
+
+  .nut-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:1.5rem;}
+  .nut-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 14px;}
+  .nut-card-label{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:5px;}
+  .nut-card-val{font-family:'Bebas Neue',sans-serif;font-size:30px;line-height:1;}
+  .nut-card-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+
+  .meal-table{width:100%;border-collapse:collapse;}
+  .meal-table th{text-align:left;padding:7px 10px;font-size:10px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);border-bottom:1px solid var(--border);}
+  .meal-table td{padding:9px 10px;border-bottom:1px solid var(--border);font-size:12px;}
+  .meal-table tr:last-child td{border-bottom:none;}
+  .meal-table tr:hover td{background:var(--surface2);}
+
+  .phase-legend{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem;}
+  .ph-leg{font-size:10px;font-family:'DM Mono',monospace;padding:4px 9px;border-radius:4px;border:1px solid;}
+  .ph-leg-green{background:var(--green-dim);border-color:rgba(184,245,160,0.3);color:var(--green);}
+  .ph-leg-blue{background:var(--blue-dim);border-color:rgba(126,200,245,0.3);color:var(--blue);}
+  .ph-leg-amber{background:var(--amber-dim);border-color:rgba(245,200,66,0.3);color:var(--amber);}
+  .ph-leg-red{background:var(--red-dim);border-color:rgba(245,111,111,0.3);color:var(--red);}
+  .ph-leg-purple{background:var(--purple-dim);border-color:rgba(200,168,245,0.3);color:var(--purple);}
+
+  .bottom-nav{display:none;}
+
+  @media(max-width:700px){
+    .header{padding:1rem 1rem 0.85rem;}
+    .content{padding:0.85rem 0.85rem 5.5rem;}
+    .nav{display:none !important;}
+    .header-top{flex-direction:column;align-items:flex-start;gap:0.5rem;margin-bottom:0.75rem;}
+    .header-title{font-size:clamp(32px,11vw,52px);}
+    .header-meta{text-align:left;}
+    .stats-row{gap:5px;}
+    .stat-chip{padding:5px 9px;font-size:10px;}
+    .stat-chip .val{font-size:12px;}
+    .week-selector{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px;scrollbar-width:none;gap:4px;}
+    .week-selector::-webkit-scrollbar{display:none;}
+    .wk-btn{flex-shrink:0;font-size:11px;padding:7px 11px;min-height:34px;}
+    .phase-legend{gap:5px;}
+    .ph-leg{font-size:9px;padding:3px 7px;}
+    .phase-banner{padding:10px 12px;gap:10px;}
+    .pb-num{font-size:28px;}
+    .pb-name{font-size:15px;}
+    .pb-desc{font-size:11px;}
+    .week-ribbon{gap:3px;}
+    .wr-day{padding:5px 2px;}
+    .wr-day .wr-dt{font-size:11px;}
+    .wr-day .wr-t{font-size:8px;}
+    .days-grid{grid-template-columns:1fr;gap:10px;}
+    .day-card{border-radius:10px;}
+    .day-card-head{padding:10px 12px 9px;}
+    .day-num{font-size:22px;margin-right:6px;}
+    .day-name{font-size:13px;}
+    .day-card-body{padding:10px 12px 12px;}
+    .session-name{font-size:14px;}
+    .session-detail{font-size:12px;}
+    .exercise-list li{font-size:12px;padding:5px 0;}
+    .ex-sets{font-size:11px;}
+    .nut-day-table th,.nut-day-table td{padding:4px 5px;font-size:10px;}
+    .meal-time{font-size:9px;}
+    .sec-heading{font-size:13px;margin-top:1.25rem;}
+    .ml-grid{grid-template-columns:1fr 1fr;}
+    .milestones{max-width:100%;}
+    .ml-title{font-size:17px;}
+    .lift-table{font-size:11px;}
+    .lift-table th,.lift-table td{padding:7px 6px;}
+    .nut-grid{grid-template-columns:1fr 1fr;}
+    .nut-card-val{font-size:24px;}
+    .meal-table{font-size:11px;display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+    .meal-table th,.meal-table td{padding:7px 8px;white-space:nowrap;}
+    .rule-item{padding:10px 11px;font-size:12px;}
+    .info-block{font-size:12px;padding:9px 12px;}
+    .bottom-nav{
+      display:flex;position:fixed;bottom:0;left:0;right:0;z-index:100;
+      background:rgba(10,10,10,0.97);
+      border-top:1px solid var(--border);
+      backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    }
+    .bn-btn{
+      flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+      padding:8px 4px 10px;background:none;border:none;cursor:pointer;
+      color:var(--muted);font-family:'DM Mono',monospace;font-size:9px;
+      text-transform:uppercase;letter-spacing:0.3px;gap:3px;
+      transition:color 0.15s;min-height:54px;-webkit-tap-highlight-color:transparent;
+    }
+    .bn-btn.active{color:var(--green);}
+    .bn-icon{font-size:18px;line-height:1;}
+    .divider{margin:1rem 0;}
+  }
+  @media(max-width:380px){
+    .header-title{font-size:30px;}
+    .nut-grid{grid-template-columns:1fr 1fr;}
+    .ml-grid{grid-template-columns:1fr;}
+    .stat-chip{padding:4px 7px;font-size:9px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="reset-badge">⚡ MAY 4 RESET — 17 WEEKS</div>
+      <div class="header-title">SAM'S<br><span>TRANSFORMATION</span></div>
+    </div>
+    <div class="header-meta">
+      <strong>Mon 4 May → Mon 31 Aug 2026</strong>
+      17 weeks · 5 phases · Agra mess + own nutrition
+    </div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-chip">START<span class="val">112 kg</span></div>
+    <div class="stat-chip">TARGET<span class="val">100–103 kg</span></div>
+    <div class="stat-chip">BENCH<span class="val">60→90 kg</span></div>
+    <div class="stat-chip">RUN<span class="val">2→10 km</span></div>
+    <div class="stat-chip">CHINS<span class="val">2→12+ reps</span></div>
+    <div class="stat-chip">PROTEIN/DAY<span class="val">~170g</span></div>
+    <div class="stat-chip">STEPS<span class="val">15,000</span></div>
+  </div>
+</div>
+
+<nav class="nav">
+  <button class="nav-btn active" onclick="showPane('weeks',this)">Weekly Calendar</button>
+  <button class="nav-btn" onclick="showPane('workouts',this)">Workout Library</button>
+  <button class="nav-btn" onclick="showPane('strength',this)">Strength Plan</button>
+  <button class="nav-btn" onclick="showPane('cardio',this)">Cardio Plan</button>
+  <button class="nav-btn" onclick="showPane('nutrition',this)">Nutrition Guide</button>
+  <button class="nav-btn" onclick="showPane('milestones',this)">Milestones</button>
+  <button class="nav-btn" onclick="showPane('rules',this)">Trainer's Rules</button>
+</nav>
+
+<div class="content">
+
+<!-- ============ WEEKS PANE ============ -->
+<div id="pane-weeks" class="pane active">
+  <div class="phase-legend">
+    <span class="ph-leg ph-leg-green">Ph1 · Re-Entry (Wk1)</span>
+    <span class="ph-leg ph-leg-blue">Ph2 · Build (Wk2–5)</span>
+    <span class="ph-leg ph-leg-amber">Ph3 · Load (Wk6–11)</span>
+    <span class="ph-leg ph-leg-red">Ph4 · Peak (Wk12–16)</span>
+    <span class="ph-leg ph-leg-purple">Ph5 · Forge (Wk17)</span>
+  </div>
+  <div class="week-selector" id="weekSelector"></div>
+  <div id="weekContent"></div>
+</div>
+
+<!-- ============ WORKOUTS PANE ============ -->
+<div id="pane-workouts" class="pane">
+  <div class="sec-heading">Phase 1 — Re-Entry: Full Body 3×/week (Wk 1)</div>
+  <div class="info-block"><strong>Coach's note:</strong> One week only. The goal isn't fitness — it's re-establishing the identity of someone who shows up every day. Win the week, not the workout. Controlled loads. Leave 3 reps in tank on everything.</div>
+  <div class="days-grid">
+    <div class="day-card">
+      <div class="day-card-head"><div class="day-info"><div class="day-name">Full Body A</div><div class="day-date">Mon / Fri · Wk 1</div></div><span class="day-type-badge badge-full">Full Body</span></div>
+      <div class="day-card-body">
+        <div class="session-detail">Identity day. Show up. Every rep with full control. Leave reps in the tank.</div>
+        <ul class="exercise-list">
+          <li><span class="ex-name">Goblet squat</span><span class="ex-sets">3×12 @ 16kg KB</span></li>
+          <li><span class="ex-name">Bench press</span><span class="ex-sets">3×8 @ 57.5kg</span></li>
+          <li><span class="ex-name">Seated cable row</span><span class="ex-sets">3×10 @ 40kg</span></li>
+          <li><span class="ex-name">DB shoulder press</span><span class="ex-sets">3×10 @ 14kg</span></li>
+          <li><span class="ex-name">Romanian deadlift</span><span class="ex-sets">3×10 @ 42.5kg</span></li>
+          <li><span class="ex-name">Plank hold</span><span class="ex-sets">3×25s</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="day-card">
+      <div class="day-card-head"><div class="day-info"><div class="day-name">Full Body B</div><div class="day-date">Wed · Wk 1</div></div><span class="day-type-badge badge-full">Full Body</span></div>
+      <div class="day-card-body">
+        <div class="session-detail">Hip hinge on RDL — feel the hamstrings load. Core braced. Slow eccentric.</div>
+        <ul class="exercise-list">
+          <li><span class="ex-name">Leg press</span><span class="ex-sets">3×12 @ 85kg</span></li>
+          <li><span class="ex-name">Incline DB press</span><span class="ex-sets">3×10 @ 16kg</span></li>
+          <li><span class="ex-name">Lat pulldown</span><span class="ex-sets">3×10 @ 47.5kg</span></li>
+          <li><span class="ex-name">Lateral raises</span><span class="ex-sets">3×12 @ 8kg</span></li>
+          <li><span class="ex-name">Leg curl</span><span class="ex-sets">3×12</span></li>
+          <li><span class="ex-name">Dead bug</span><span class="ex-sets">3×8 each side</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="sec-heading">Phase 2 — Build: Upper / Lower 4×/week (Wk 2–5)</div>
+  <div class="info-block"><strong>Coach's note:</strong> First real benchmarks. Running from 3km building to 5km. You leave this phase genuinely stronger than you've ever been. Double progression — only add weight when you hit the TOP of rep range in 2 consecutive sessions.</div>
+  <div class="days-grid">
+    <div class="day-card">
+      <div class="day-card-head"><div class="day-info"><div class="day-name">Upper A — Push</div><div class="day-date">Mon · Wk 2–5</div></div><span class="day-type-badge badge-strength">Strength</span></div>
+      <div class="day-card-body">
+        <ul class="exercise-list">
+          <li><span class="ex-name">Bench press</span><span class="ex-sets">4×6–8 @ 65–72.5kg</span></li>
+          <li><span class="ex-name">OHP (barbell)</span><span class="ex-sets">3×8 @ 40–47.5kg</span></li>
+          <li><span class="ex-name">Incline DB press</span><span class="ex-sets">3×10 @ 18–22kg</span></li>
+          <li><span class="ex-name">Cable fly (low)</span><span class="ex-sets">3×12–15</span></li>
+          <li><span class="ex-name">Tricep pushdown</span><span class="ex-sets">3×12</span></li>
+          <li><span class="ex-name">Lateral raises</span><span class="ex-sets">3×15 @ 8–10kg</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="day-card">
+      <div class="day-card-head"><div class="day-info"><div class="day-name">Upper B — Pull</div><div class="day-date">Fri · Wk 2–5</div></div><span class="day-type-badge badge-strength">Strength</span></div>
+      <div class="day-card-body">
+        <ul class="exercise-list">
+          <li><span class="ex-name">Chin-ups (BW / assisted)</span><span class="ex-sets">4×max reps — LOG IT</span></li>
+          <li><span class="ex-name">Barbell row</span><span class="ex-sets">4×8 @ 52.5–62.5kg</span></li>
+          <li><span class="ex-name">Seated cable row</span><span class="ex-sets">3×10 @ 52–60kg</span></li>
+          <li><span class="ex-name">Face pulls</span><span class="ex-sets">3×15–20</span></li>
+          <li><span class="ex-name">Hammer curl</span><span class="ex-sets">3×10 each</span></li>
+          <li><span class="ex-name">Rear delt fly</span><span class="ex-sets">3×12</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="day-card">
+      <div class="day-card-head"><div class="day-info"><div class="day-name">Lower A — Squat</div><div class="day-date">Wed · Wk 2–5</div></div><span class="day-type-badge badge-strength">Strength</span></div>
+      <div class="day-card-body">
+        <ul class="exercise-list">
+          <li><span class="ex-name">Barbell back squat</span><span class="ex-sets">4×8 @ 52.5–67.5kg</span></li>
+          <li><span class="ex-name">Walking lunges</span><span class="ex-sets">3×10 each leg</span></li>
+          <li><span class="ex-name">Leg press</span><span class="ex-sets">3×12 @ 100–120kg</span></li>
+          <li><span class="ex-name">Leg curl</span><span class="ex-sets">3×12</span></li>
+          <li><span class="ex-name">Calf raises</span><span class="ex-sets">4×15</span></li>
+          <li><span class="ex-name">Ab wheel / plank</span><span class="ex-sets">3×max / 40s</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="day-card">
+      <div class="day-card-head"><div class="day-info"><div class="day-name">Lower B — Hinge</div><div class="day-date">Thu · Wk 2–5</div></div><span class="day-type-badge badge-strength">Strength</span></div>
+      <div class="day-card-body">
+        <ul class="exercise-list">
+          <li><span class="ex-name">Romanian deadlift</span><span class="ex-sets">4×8 @ 67.5–82.5kg</span></li>
+          <li><span class="ex-name">Sumo deadlift</span><span class="ex-sets">3×6 @ 65–80kg</span></li>
+          <li><span class="ex-name">Hip thrust (BB)</span><span class="ex-sets">3×12 @ 52–72kg</span></li>
+          <li><span class="ex-name">Step-ups (bench)</span><span class="ex-sets">3×10 each</span></li>
+          <li><span class="ex-name">Seated calf raise</span><span class="ex-sets">3×15</span></li>
+          <li><span class="ex-name">Hanging knee raise</span><span class="ex-sets">3×10–12</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="sec-heading">Phase 3 — Load: Push / Pull / Legs 5×/week (Wk 6–11)</div>
+  <div class="info-block"><strong>Coach's note:</strong> This is the engine of the transformation — 6 weeks of progressive overload where the physique change becomes visible to others. 400m intervals introduced Wk 7. Week 11 is a mandatory deload — non-negotiable.</div>
+  <div class="days-grid">
+    <div class="day-card">
+      <div class="day-card-head"><div class="day-info"><div class="day-name">Push Day</div><div class="day-date">Mon · Wk 6–11</div></div><span class="day-type-badge badge-strength">Strength</span></div>
+      <div class="day-card-body">
+        <ul class="exercise-list">
+          <li><span class="ex-name">Bench press</span><span class="ex-sets">4×5–6 @ 75–90kg</span></li>
+          <li><span class="ex-name">OHP (barbell)</span><span class="ex-sets">4×6 @ 50–65kg</span></li>
+          <li><span class="ex-name">Incline DB press</span><span class="ex-sets">3×10 @ 24–30kg</span></li>
+          <li><span class="ex-name">Cable fly (low)</span><span class="ex-sets">3×12–15</span></li>
+          <li><span class="ex-name">Skull crushers</span><span class="ex-sets">3×10 @ 22–30kg</span></li>
+          <li><span class="ex-name">Tricep dip / pushdown</span><span class="ex-sets">3×12–15</span></li>
+          <li><span class="ex-name">Lateral raises</span><span class="ex-sets">4×15 @ 10–14kg</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="day-card">
+      <div class="day-card-head"><div class="day-info"><div class="day-name">Pull Day</div><div class="day-date">Wed · Wk 6–11</div></div><span class="day-type-badge badge-strength">Strength</span></div>
+      <div class="day-card-body">
+        <ul class="exercise-list">
+          <li><span class="ex-name">Weighted chin-ups</span><span class="ex-sets">4×max (add 5kg when ≥8)</span></li>
+          <li><span class="ex-name">Pendlay row</span><span class="ex-sets">4×5–6 @ 65–82.5kg</span></li>
+          <li><span class="ex-name">Seated cable row</span><span class="ex-sets">3×10 @ 62–75kg</span></li>
+          <li><span class="ex-name">Face pulls</span><span class="ex-sets">3×20</span></li>
+          <li><span class="ex-name">Barbell curl</span><span class="ex-sets">3×10 @ 32–42kg</span></li>
+          <li><span class="ex-name">Hammer curl</span><span class="ex-sets">3×10 each</span></li>
+          <li><span class="ex-name">Rear delt fly</span><span class="ex-sets">3×15</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="day-card">
+      <div class="day-card-head"><div class="day-info"><div class="day-name">Leg Day</div><div class="day-date">Fri · Wk 6–11</div></div><span class="day-type-badge badge-strength">Strength</span></div>
+      <div class="day-card-body">
+        <ul class="exercise-list">
+          <li><span class="ex-name">Barbell squat</span><span class="ex-sets">4×5 @ 80–112.5kg</span></li>
+          <li><span class="ex-name">Romanian deadlift</span><span class="ex-sets">4×6 @ 92.5–115kg</span></li>
+          <li><span class="ex-name">Leg press (high foot)</span><span class="ex-sets">3×12 @ 120–150kg</span></li>
+          <li><span class="ex-name">Bulgarian split squat</span><span class="ex-sets">3×8 each @ 10–20kg</span></li>
+          <li><span class="ex-name">Leg curl</span><span class="ex-sets">3×12</span></li>
+          <li><span class="ex-name">Standing calf raise</span><span class="ex-sets">4×20</span></li>
+          <li><span class="ex-name">Hanging leg raise</span><span class="ex-sets">3×12–15</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="sec-heading">Phase 4 — Peak: Heavy Strength 5×/week (Wk 12–16)</div>
+  <div class="info-block"><strong>Coach's note:</strong> 3–5 rep territory. Heavy compounds. This is where the athlete body gets built. PR testing Week 15. Week 11 deload already done — you go into this phase fresh and hungry.</div>
+  <div class="days-grid">
+    <div class="day-card">
+      <div class="day-card-head"><div class="day-info"><div class="day-name">Push — Peak</div><div class="day-date">Mon · Wk 12–16</div></div><span class="day-type-badge badge-strength">Strength</span></div>
+      <div class="day-card-body">
+        <ul class="exercise-list">
+          <li><span class="ex-name">Bench press</span><span class="ex-sets">4×4–5 @ 82.5–90kg</span></li>
+          <li><span class="ex-name">OHP (barbell)</span><span class="ex-sets">4×5 @ 57.5–67.5kg</span></li>
+          <li><span class="ex-name">Incline DB press</span><span class="ex-sets">3×8 @ 28–32kg</span></li>
+          <li><span class="ex-name">Cable fly</span><span class="ex-sets">3×15</span></li>
+          <li><span class="ex-name">Skull crushers</span><span class="ex-sets">3×8</span></li>
+          <li><span class="ex-name">Lateral raises</span><span class="ex-sets">4×15 @ 12kg</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="day-card">
+      <div class="day-card-head"><div class="day-info"><div class="day-name">Pull — Peak</div><div class="day-date">Wed · Wk 12–16</div></div><span class="day-type-badge badge-strength">Strength</span></div>
+      <div class="day-card-body">
+        <ul class="exercise-list">
+          <li><span class="ex-name">Weighted chin-ups</span><span class="ex-sets">4×max (weighted)</span></li>
+          <li><span class="ex-name">Pendlay row</span><span class="ex-sets">4×5 @ 75–87.5kg</span></li>
+          <li><span class="ex-name">Seated cable row</span><span class="ex-sets">3×8 @ 70–80kg</span></li>
+          <li><span class="ex-name">Face pulls</span><span class="ex-sets">3×20</span></li>
+          <li><span class="ex-name">DB curl</span><span class="ex-sets">3×10 @ 18–22kg</span></li>
+          <li><span class="ex-name">Hammer curl</span><span class="ex-sets">3×12 each</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="day-card">
+      <div class="day-card-head"><div class="day-info"><div class="day-name">Legs — Peak</div><div class="day-date">Fri · Wk 12–16</div></div><span class="day-type-badge badge-strength">Strength</span></div>
+      <div class="day-card-body">
+        <ul class="exercise-list">
+          <li><span class="ex-name">Barbell squat</span><span class="ex-sets">4×5 @ 95–110kg</span></li>
+          <li><span class="ex-name">Romanian deadlift</span><span class="ex-sets">4×5 @ 107.5–117.5kg</span></li>
+          <li><span class="ex-name">Leg press</span><span class="ex-sets">3×10 @ 130–155kg</span></li>
+          <li><span class="ex-name">Bulgarian split squat</span><span class="ex-sets">3×6 each @ 18–22kg</span></li>
+          <li><span class="ex-name">Leg curl</span><span class="ex-sets">3×10</span></li>
+          <li><span class="ex-name">Calf raise</span><span class="ex-sets">4×20</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ STRENGTH PANE ============ -->
+<div id="pane-strength" class="pane">
+  <div class="sec-heading">Lift progression — May 4 to Aug 31 (17 weeks)</div>
+  <table class="lift-table">
+    <thead><tr><th>Lift</th><th>Start</th><th>Wk 5</th><th>Wk 11</th><th>Wk 15</th><th>End (Wk 17)</th><th>Progress</th></tr></thead>
+    <tbody>
+      <tr><td style="font-weight:500">Bench press</td><td>60kg×6</td><td>72.5kg×6</td><td>82.5kg×5</td><td>87.5kg×5</td><td style="color:var(--green)">90kg×5</td><td><div class="prog-bar"><div class="prog-fill" style="width:75%;background:var(--blue)"></div></div></td></tr>
+      <tr><td style="font-weight:500">Barbell squat</td><td>BW only</td><td>62.5kg×8</td><td>90kg×5</td><td>105kg×5</td><td style="color:var(--green)">110kg×5</td><td><div class="prog-bar"><div class="prog-fill" style="width:88%;background:var(--green)"></div></div></td></tr>
+      <tr><td style="font-weight:500">Romanian DL</td><td>42.5kg×10</td><td>82.5kg×8</td><td>100kg×6</td><td>112.5kg×5</td><td style="color:var(--green)">117.5kg×5</td><td><div class="prog-bar"><div class="prog-fill" style="width:82%;background:var(--amber)"></div></div></td></tr>
+      <tr><td style="font-weight:500">Chin-ups (BW)</td><td>2 reps</td><td>5–6 reps</td><td>9–10 reps</td><td>11 reps</td><td style="color:var(--green)">12+ reps</td><td><div class="prog-bar"><div class="prog-fill" style="width:80%;background:var(--purple)"></div></div></td></tr>
+      <tr><td style="font-weight:500">Overhead press</td><td>37.5kg×8</td><td>47.5kg×6</td><td>57.5kg×5</td><td>65kg×5</td><td style="color:var(--green)">67.5kg×5</td><td><div class="prog-bar"><div class="prog-fill" style="width:70%;background:var(--orange)"></div></div></td></tr>
+      <tr><td style="font-weight:500">Push-ups</td><td>8 reps</td><td>20 reps</td><td>32 reps</td><td>40 reps</td><td style="color:var(--green)">45+ reps</td><td><div class="prog-bar"><div class="prog-fill" style="width:92%;background:var(--red)"></div></div></td></tr>
+    </tbody>
+  </table>
+
+  <div class="divider"></div>
+  <div class="sec-heading">Overload protocol per phase</div>
+  <ul class="rule-list">
+    <li class="rule-item info"><div class="rule-dot"></div><div><strong>Wk 1 (Re-Entry):</strong> 3 sets × 10–12 reps at 60–65% max. Form is the only KPI. Leave 3 reps in tank. Win the identity, not the workout.</div></li>
+    <li class="rule-item info"><div class="rule-dot"></div><div><strong>Wk 2–5 (Build):</strong> Double progression. 4 sets × 6–10 reps. Add weight only when you hit the TOP of rep range with clean form in 2 consecutive sessions — not 1, two.</div></li>
+    <li class="rule-item info"><div class="rule-dot"></div><div><strong>Wk 6–10 (Load):</strong> RPE 7–8 on main lifts. Progressive overload every week. 400m intervals run alongside PPL from week 7.</div></li>
+    <li class="rule-item deload"><div class="rule-dot"></div><div><strong>Wk 11 (Deload — Mandatory):</strong> 55% load, same reps. This is when tendons catch up to muscles. Skip deload = injury in week 12. Not negotiable.</div></li>
+    <li class="rule-item info"><div class="rule-dot"></div><div><strong>Wk 12–16 (Peak):</strong> Main compounds at 3–5 rep strength range, 82–90% intensity. PR testing week 15. Accessory work stays at 10–12 reps moderate load.</div></li>
+    <li class="rule-item tip"><div class="rule-dot"></div><div><strong>Wk 17 (Forge):</strong> Consolidation. Confirm all PRs. Test 10km run Aug 30. Final benchmark photo + measurements Aug 31.</div></li>
+  </ul>
+</div>
+
+<!-- ============ CARDIO PANE ============ -->
+<div id="pane-cardio" class="pane">
+  <div class="sec-heading">Running progression — 400m grass field</div>
+  <table class="meal-table">
+    <thead><tr><th>Weeks</th><th>Session type</th><th>Distance / Volume</th><th>Effort</th><th>Field laps</th></tr></thead>
+    <tbody>
+      <tr><td style="color:var(--green);font-weight:500">Wk 1</td><td>Jog + walk intervals</td><td>2.5–3 km</td><td>Conversational — can talk</td><td>6–7 laps</td></tr>
+      <tr><td style="color:var(--blue);font-weight:500">Wk 2–3</td><td>Continuous jog</td><td>3–4 km</td><td>Steady, no walk breaks</td><td>8–10 laps</td></tr>
+      <tr><td style="color:var(--blue);font-weight:500">Wk 4–5</td><td>Steady state + strides</td><td>4–5 km</td><td>Target sub-33 min 5k</td><td>10–12 laps</td></tr>
+      <tr><td style="color:var(--amber);font-weight:500">Wk 6</td><td>5km time trial</td><td>5 km</td><td>Best effort — record time</td><td>12–13 laps</td></tr>
+      <tr><td style="color:var(--amber);font-weight:500">Wk 7–8</td><td>400m intervals begin</td><td>6×400m + warmup</td><td>90% effort per rep, 90s rest</td><td>6 fast laps</td></tr>
+      <tr><td style="color:var(--amber);font-weight:500">Wk 9–10</td><td>Long run + intervals alt.</td><td>6km / 8×400m</td><td>Alternate weekly</td><td>15 / 8 laps</td></tr>
+      <tr><td style="color:var(--amber);font-weight:500">Wk 11</td><td>Easy deload jog</td><td>4 km easy</td><td>Recovery — no pace target</td><td>10 laps</td></tr>
+      <tr><td style="color:var(--red);font-weight:500">Wk 12–13</td><td>Tempo run</td><td>7–8 km</td><td>Sub-50 min 8km target</td><td>20 laps</td></tr>
+      <tr><td style="color:var(--red);font-weight:500">Wk 14–16</td><td>Long run push</td><td>8–10 km</td><td>Pace secondary, distance primary</td><td>20–25 laps</td></tr>
+      <tr><td style="color:var(--purple);font-weight:500">Wk 17</td><td>10km attempt</td><td>10 km</td><td>Complete it. Celebrate.</td><td>25 laps</td></tr>
+    </tbody>
+  </table>
+  <div class="divider"></div>
+  <div class="sec-heading">Sport integration</div>
+  <ul class="rule-list">
+    <li class="rule-item tip"><div class="rule-dot"></div><div><strong>Basketball:</strong> Weeks 1–4: 30–45 min casual, Zone 2 HR. Week 5+: full court = proper cardio session. Never the day before or after heavy legs.</div></li>
+    <li class="rule-item tip"><div class="rule-dot"></div><div><strong>Football / 5-a-side:</strong> Natural interval cardio. 60 min ≈ 5–7km effort. Replaces Saturday structured run when motivation is low. Don't stack on top of a full training day.</div></li>
+  </ul>
+  <div class="sec-heading">Steps strategy — 15,000/day</div>
+  <table class="meal-table" style="max-width:460px">
+    <thead><tr><th>Source</th><th>~Steps</th></tr></thead>
+    <tbody>
+      <tr><td>Morning walk / to gym</td><td style="color:var(--green)">~3,000</td></tr>
+      <tr><td>Gym session</td><td style="color:var(--green)">~2,500</td></tr>
+      <tr><td>Run or sport session</td><td style="color:var(--green)">~4,000–6,000</td></tr>
+      <tr><td>Evening walk (gap filler)</td><td style="color:var(--green)">~2,000–3,000</td></tr>
+      <tr><td style="font-weight:500">Daily total</td><td style="color:var(--amber);font-weight:500">~13k–15k ✓</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ============ NUTRITION PANE ============ -->
+<div id="pane-nutrition" class="pane">
+  <div class="nut-grid">
+    <div class="nut-card"><div class="nut-card-label">Target kcal</div><div class="nut-card-val" style="color:var(--green)">2,350</div><div class="nut-card-sub">~600 deficit from TDEE</div></div>
+    <div class="nut-card"><div class="nut-card-label">Protein</div><div class="nut-card-val" style="color:var(--blue)">170g</div><div class="nut-card-sub">non-negotiable daily</div></div>
+    <div class="nut-card"><div class="nut-card-label">Carbs</div><div class="nut-card-val" style="color:var(--amber)">255g</div><div class="nut-card-sub">front-load pre-training</div></div>
+    <div class="nut-card"><div class="nut-card-label">Fats</div><div class="nut-card-val" style="color:var(--orange)">70g</div><div class="nut-card-sub">don't cut — hormones need it</div></div>
+    <div class="nut-card"><div class="nut-card-label">Expected loss</div><div class="nut-card-val" style="color:var(--red)">9–12kg</div><div class="nut-card-sub">over 17 weeks</div></div>
+    <div class="nut-card"><div class="nut-card-label">Water</div><div class="nut-card-val" style="color:var(--teal)">3.5L</div><div class="nut-card-sub">4L on cardio days</div></div>
+  </div>
+
+  <div class="sec-heading">Your protein sources — what you have</div>
+  <table class="meal-table" style="max-width:600px">
+    <thead><tr><th>Source</th><th>Protein</th><th>When to use</th></tr></thead>
+    <tbody>
+      <tr><td>Whey (1 scoop)</td><td style="color:var(--green)">26g</td><td>Morning + post-workout or pre-bed</td></tr>
+      <tr><td>High protein milk (250ml)</td><td style="color:var(--green)">18g</td><td>Mix with morning whey or pre-bed</td></tr>
+      <tr><td>Soyabean (100g cooked)</td><td style="color:var(--green)">36g</td><td>Evening — your biggest protein weapon</td></tr>
+      <tr><td>Eggs ×2 (summers limit)</td><td style="color:var(--green)">12g</td><td>Morning — max 2/day in summers</td></tr>
+      <tr><td>Paneer (100g, occasional)</td><td style="color:var(--amber)">18g</td><td>Replace soyabean when available</td></tr>
+      <tr><td>Mess dal/rajma/chole</td><td style="color:var(--muted)">8–15g</td><td>Lunch + dinner at mess</td></tr>
+    </tbody>
+  </table>
+
+  <div class="divider"></div>
+  <div class="sec-heading">Mess menu — what to eat vs skip</div>
+  <table class="meal-table">
+    <thead><tr><th>Day</th><th>Meal</th><th>Mess Item</th><th>Verdict</th><th>Reason</th></tr></thead>
+    <tbody>
+      <tr><td rowspan="4" style="font-weight:500;color:var(--blue)">Wed</td><td>Breakfast</td><td>Paw Bhaji Tea</td><td><span style="color:var(--amber)">⚠ Eat small</span></td><td>High carb, some veg — 1 serving only</td></tr>
+      <tr><td>Lunch</td><td>Aloo Jeera Kadhi Pakora Roti Rice Salad</td><td><span style="color:var(--green)">✓ Eat (modified)</span></td><td>Eat kadhi + salad + 2 roti. Skip pakora & rice.</td></tr>
+      <tr><td>Snacks</td><td>Pasta Sauce Tea</td><td><span style="color:var(--red)">✗ Skip entirely</span></td><td>Empty calories, zero protein</td></tr>
+      <tr><td>Dinner</td><td>Aloo Gazar Mutter Rajma Masala Roti Rice Salad Custard</td><td><span style="color:var(--green)">✓ Eat (modified)</span></td><td>Rajma is excellent protein. 2 roti + rajma + salad. Skip custard.</td></tr>
+
+      <tr><td rowspan="4" style="font-weight:500;color:var(--blue)">Thu</td><td>Breakfast</td><td>Kulche Matar Tea</td><td><span style="color:var(--amber)">⚠ Eat small</span></td><td>Matar has protein. 1 kulcha, eat the matar.</td></tr>
+      <tr><td>Lunch</td><td>Aloo Soyabeen Arhar Dal Roti Rice Salad</td><td><span style="color:var(--green)">✓ Best lunch day</span></td><td>Soyabean + dal = high protein. Eat fully. Skip rice.</td></tr>
+      <tr><td>Snacks</td><td>Rusk Tea</td><td><span style="color:var(--red)">✗ Skip</span></td><td>Pure empty carbs</td></tr>
+      <tr><td>Dinner</td><td>Mater Paneer Dal Makhani Roti Rice Salad Sweet</td><td><span style="color:var(--green)">✓ Best dinner day</span></td><td>Paneer + dal makhani = great protein. Eat fully. Skip sweet.</td></tr>
+
+      <tr><td rowspan="4" style="font-weight:500;color:var(--blue)">Fri</td><td>Breakfast</td><td>Tea Samosa with Chutney</td><td><span style="color:var(--red)">✗ Skip — eat own</span></td><td>Fried, zero protein. Whey+milk+eggs instead.</td></tr>
+      <tr><td>Lunch</td><td>Rajma Curd Roti Rice Salad</td><td><span style="color:var(--green)">✓ Eat (modified)</span></td><td>Rajma + curd = solid protein combo. 2 roti. Skip rice.</td></tr>
+      <tr><td>Snacks</td><td>Veg & Dry Poha Sauce Tea</td><td><span style="color:var(--amber)">⚠ Small portion</span></td><td>Poha is light carb. OK if hungry before training.</td></tr>
+      <tr><td>Dinner</td><td>Aloo Patta Gobhi Roti Rice Chana Dal Salad Milk</td><td><span style="color:var(--green)">✓ Eat (modified)</span></td><td>Chana dal + mess milk = decent. 2 roti, eat dal fully.</td></tr>
+
+      <tr><td rowspan="4" style="font-weight:500;color:var(--blue)">Sat</td><td>Breakfast</td><td>Aloo Sabji Dhai Jalebi Aloo Kachori Tea</td><td><span style="color:var(--red)">✗ Skip — eat own</span></td><td>Jalebi + kachori = sugar+oil bomb. Zero value.</td></tr>
+      <tr><td>Lunch</td><td>Kadhi Lal Mirch Achar Roti Rice Salad</td><td><span style="color:var(--amber)">⚠ Eat small</span></td><td>Kadhi has some protein. 2 roti + kadhi. Skip rice.</td></tr>
+      <tr><td>Snacks</td><td>Sandwich Sauce Tea</td><td><span style="color:var(--red)">✗ Skip</span></td><td>Refined bread, no protein</td></tr>
+      <tr><td>Dinner</td><td>Chole Roti Rice Salad</td><td><span style="color:var(--green)">✓ Eat fully</span></td><td>Chole = best protein dinner. 2–3 roti + chole. Skip rice.</td></tr>
+
+      <tr><td rowspan="3" style="font-weight:500;color:var(--blue)">Sun</td><td>Breakfast</td><td>Paneer Paratha Chatni Achar Sauce Tea</td><td><span style="color:var(--green)">✓ Best breakfast day</span></td><td>Paneer paratha = protein + carbs. Eat 2, skip extra oil.</td></tr>
+      <tr><td>Lunch</td><td>Meggi Sauce Coffee</td><td><span style="color:var(--red)">✗ Skip — eat own</span></td><td>Maggi = pure empty carbs. Cook soyabean instead.</td></tr>
+      <tr><td>Snacks/Dinner</td><td>Shahi Paneer Arhar Dal Rice Roti Salad Sweet</td><td><span style="color:var(--green)">✓ Best meal of week</span></td><td>Shahi paneer + dal = high protein. Eat fully. Skip sweet.</td></tr>
+
+      <tr><td rowspan="4" style="font-weight:500;color:var(--blue)">Mon</td><td>Breakfast</td><td>Bread Butter Jam Tea</td><td><span style="color:var(--red)">✗ Skip — eat own</span></td><td>Sugar + refined carbs. Zero protein. Whey+milk+eggs.</td></tr>
+      <tr><td>Lunch</td><td>Chole Boondi Raita Roti Rice Salad</td><td><span style="color:var(--green)">✓ Eat (modified)</span></td><td>Chole + raita = good protein. 2 roti, eat fully. Skip rice.</td></tr>
+      <tr><td>Snacks</td><td>Namkeen Thandai</td><td><span style="color:var(--amber)">⚠ Occasional</span></td><td>Thandai has milk — some protein. OK once in a while.</td></tr>
+      <tr><td>Dinner</td><td>Mix Veg Masoor Dal Roti Rice Salad Milk</td><td><span style="color:var(--green)">✓ Eat (modified)</span></td><td>Masoor dal + mess milk. 2 roti + dal fully. Skip rice.</td></tr>
+
+      <tr><td rowspan="4" style="font-weight:500;color:var(--blue)">Tue</td><td>Breakfast</td><td>Idli Sambhar Coconut Chutney Tea Cornflakes Milk</td><td><span style="color:var(--green)">✓ Best breakfast option</span></td><td>Idli sambhar = decent protein + carbs. Eat the cornflakes+milk.</td></tr>
+      <tr><td>Lunch</td><td>Aloo Gobhi Chana Dal Roti Rice Salad</td><td><span style="color:var(--green)">✓ Eat (modified)</span></td><td>Chana dal is good protein. 2 roti + dal. Skip rice.</td></tr>
+      <tr><td>Snacks</td><td>Namkeen Jawa Sauce Tea</td><td><span style="color:var(--red)">✗ Skip</span></td><td>Empty snack</td></tr>
+      <tr><td>Dinner</td><td>Puri Aloo Tamatar Sabji Fried Chilli Rice Kheer Achar</td><td><span style="color:var(--red)">✗ Skip — eat own</span></td><td>Fried puri + kheer = oil + sugar. No protein. Cook soyabean.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="divider"></div>
+  <div class="sec-heading">Daily protein blueprint — how to hit 170g</div>
+  <table class="meal-table" style="max-width:680px">
+    <thead><tr><th>Meal window</th><th>What to eat (own)</th><th>Protein</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td style="color:var(--amber)">Morning (7–8am)</td><td>1 scoop whey + 250ml HP milk + 2 boiled eggs</td><td style="color:var(--green);font-weight:500">~56g</td><td>Do this regardless of mess breakfast</td></tr>
+      <tr><td style="color:var(--amber)">Mess lunch (12–1pm)</td><td>Dal/rajma/chole + 2 roti + salad</td><td style="color:var(--green);font-weight:500">~15–20g</td><td>Skip rice always. Eat the legume fully.</td></tr>
+      <tr><td style="color:var(--amber)">Evening (5–6pm)</td><td>100g soyabean boiled (salt+chaat masala)</td><td style="color:var(--green);font-weight:500">~36g</td><td>Your most important own-meal. Never skip.</td></tr>
+      <tr><td style="color:var(--amber)">Mess dinner (7:30–8pm)</td><td>Dal/paneer + 2 roti + salad</td><td style="color:var(--green);font-weight:500">~15–18g</td><td>Skip rice. Eat legume/paneer fully.</td></tr>
+      <tr><td style="color:var(--amber)">Pre-bed (10pm)</td><td>1 scoop whey OR 250ml HP milk</td><td style="color:var(--green);font-weight:500">~18–26g</td><td>Slow absorption through the night</td></tr>
+      <tr style="background:var(--surface2)"><td style="font-weight:500">Daily total</td><td></td><td style="color:var(--green);font-weight:500;font-size:14px">~145–155g</td><td>Top up with paneer (18g) when available → hits 170g+</td></tr>
+    </tbody>
+  </table>
+  <ul class="rule-list" style="margin-top:1rem">
+    <li class="rule-item warn"><div class="rule-dot"></div><div><strong>Never go below 2,200 kcal.</strong> At your training volume, going too low kills muscle mass, crashes energy, and leads to binge rebound in 3–4 weeks.</div></li>
+    <li class="rule-item tip"><div class="rule-dot"></div><div><strong>Soyabean is your secret weapon.</strong> Buy in bulk — it's cheap, stores easy, and gives more protein per rupee than almost anything. Boil + chaat masala + lemon = 5 min prep.</div></li>
+    <li class="rule-item tip"><div class="rule-dot"></div><div><strong>Skip mess snacks 100% of the time.</strong> Rusk, Namkeen, Sandwich, Pasta Sauce Tea — all zero nutrition. Walk past every single day. Replace with your own boiled eggs or soyabean.</div></li>
+    <li class="rule-item info"><div class="rule-dot"></div><div><strong>Heavy training days</strong> (squat, leg day, long run): add an extra scoop of whey. Don't undereat on hard days — recovery tanks completely.</div></li>
+  </ul>
+</div>
+
+<!-- ============ MILESTONES PANE ============ -->
+<div id="pane-milestones" class="pane">
+  <div class="milestones">
+    <div class="milestone">
+      <div class="ml-left"><div class="ml-dot ml-dot-green"></div><div class="ml-line"></div></div>
+      <div class="ml-content">
+        <div class="ml-phase">Phase 1 · May 4–10 (Wk 1) · RE-ENTRY</div>
+        <div class="ml-title" style="color:var(--green)">Win the Week. Lock the Identity.</div>
+        <div class="ml-grid">
+          <div class="ml-item"><div class="ml-item-label">Weight</div><div class="ml-item-val">~111–112 kg</div></div>
+          <div class="ml-item"><div class="ml-item-label">Running</div><div class="ml-item-val">3km continuous</div></div>
+          <div class="ml-item"><div class="ml-item-label">Bench</div><div class="ml-item-val">60kg × 8 (clean)</div></div>
+          <div class="ml-item"><div class="ml-item-label">Chin-ups</div><div class="ml-item-val">3–4 reps</div></div>
+          <div class="ml-item"><div class="ml-item-label">Push-ups</div><div class="ml-item-val">10–12 reps</div></div>
+          <div class="ml-item"><div class="ml-item-label">Feel</div><div class="ml-item-val">Back in the room</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="milestone">
+      <div class="ml-left"><div class="ml-dot ml-dot-blue"></div><div class="ml-line"></div></div>
+      <div class="ml-content">
+        <div class="ml-phase">Phase 2 · May 11 – Jun 7 (Wk 2–5) · BUILD</div>
+        <div class="ml-title" style="color:var(--blue)">Upper/Lower — Benchmarks Hit</div>
+        <div class="ml-grid">
+          <div class="ml-item"><div class="ml-item-label">Weight</div><div class="ml-item-val">107–110 kg</div></div>
+          <div class="ml-item"><div class="ml-item-label">Running</div><div class="ml-item-val">5km sub-33 min</div></div>
+          <div class="ml-item"><div class="ml-item-label">Bench</div><div class="ml-item-val">72.5kg × 6</div></div>
+          <div class="ml-item"><div class="ml-item-label">Chin-ups</div><div class="ml-item-val">5–6 reps</div></div>
+          <div class="ml-item"><div class="ml-item-label">Squat</div><div class="ml-item-val">62.5kg × 8</div></div>
+          <div class="ml-item"><div class="ml-item-label">Feel</div><div class="ml-item-val">Clothes noticeably looser</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="milestone">
+      <div class="ml-left"><div class="ml-dot ml-dot-amber"></div><div class="ml-line"></div></div>
+      <div class="ml-content">
+        <div class="ml-phase">Phase 3 · Jun 8 – Jul 19 (Wk 6–11) · LOAD</div>
+        <div class="ml-title" style="color:var(--amber)">PPL — Physique Change Visible</div>
+        <div class="ml-grid">
+          <div class="ml-item"><div class="ml-item-label">Weight</div><div class="ml-item-val">103–107 kg</div></div>
+          <div class="ml-item"><div class="ml-item-label">Running</div><div class="ml-item-val">7km + 400m intervals</div></div>
+          <div class="ml-item"><div class="ml-item-label">Bench</div><div class="ml-item-val">82.5kg × 5</div></div>
+          <div class="ml-item"><div class="ml-item-label">Chin-ups</div><div class="ml-item-val">9–10 reps</div></div>
+          <div class="ml-item"><div class="ml-item-label">RDL</div><div class="ml-item-val">100kg × 6</div></div>
+          <div class="ml-item"><div class="ml-item-label">Feel</div><div class="ml-item-val">Visibly leaner, athletic</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="milestone">
+      <div class="ml-left"><div class="ml-dot ml-dot-red"></div><div class="ml-line"></div></div>
+      <div class="ml-content">
+        <div class="ml-phase">Phase 4 · Jul 27 – Aug 23 (Wk 12–16) · PEAK</div>
+        <div class="ml-title" style="color:var(--red)">Strength PRs — Push Limits</div>
+        <div class="ml-grid">
+          <div class="ml-item"><div class="ml-item-label">Weight</div><div class="ml-item-val">101–105 kg</div></div>
+          <div class="ml-item"><div class="ml-item-label">Running</div><div class="ml-item-val">10km attempt</div></div>
+          <div class="ml-item"><div class="ml-item-label">Bench</div><div class="ml-item-val">87.5–90kg × 5</div></div>
+          <div class="ml-item"><div class="ml-item-label">Chin-ups</div><div class="ml-item-val">11–12 reps</div></div>
+          <div class="ml-item"><div class="ml-item-label">Squat</div><div class="ml-item-val">105kg × 5</div></div>
+          <div class="ml-item"><div class="ml-item-label">Feel</div><div class="ml-item-val">Unrecognisable since May</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="milestone">
+      <div class="ml-left"><div class="ml-dot ml-dot-purple"></div></div>
+      <div class="ml-content">
+        <div class="ml-phase">Phase 5 · Aug 24–31 (Wk 17) · FORGE</div>
+        <div class="ml-title" style="color:var(--purple)">Consolidate — The New Baseline</div>
+        <div class="ml-grid">
+          <div class="ml-item"><div class="ml-item-label">Weight</div><div class="ml-item-val">100–103 kg</div></div>
+          <div class="ml-item"><div class="ml-item-label">Running</div><div class="ml-item-val">10km confirmed</div></div>
+          <div class="ml-item"><div class="ml-item-label">Bench</div><div class="ml-item-val">90kg × 5</div></div>
+          <div class="ml-item"><div class="ml-item-label">Chin-ups</div><div class="ml-item-val">12+ reps</div></div>
+          <div class="ml-item"><div class="ml-item-label">Squat</div><div class="ml-item-val">110kg × 5</div></div>
+          <div class="ml-item"><div class="ml-item-label">Feel</div><div class="ml-item-val">Athlete. Foundation set.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ RULES PANE ============ -->
+<div id="pane-rules" class="pane">
+  <div class="sec-heading">The non-negotiables</div>
+  <ul class="rule-list">
+    <li class="rule-item tip"><div class="rule-dot"></div><div><strong>Morning whey + milk + 2 eggs — every single day.</strong> Regardless of what mess serves. This alone covers 56g of your protein before 9am.</div></li>
+    <li class="rule-item tip"><div class="rule-dot"></div><div><strong>Soyabean every evening.</strong> Boil 100g, add salt + chaat masala + lemon. 36g protein, dirt cheap. This is your biggest nutritional leverage point.</div></li>
+    <li class="rule-item tip"><div class="rule-dot"></div><div><strong>Log every gym session.</strong> Weight, sets, reps. Without this there's no progressive overload — you're just moving iron around.</div></li>
+    <li class="rule-item tip"><div class="rule-dot"></div><div><strong>Sleep 8 hours minimum.</strong> Growth hormone peaks in deep sleep. Half your muscle recovery happens at night. Compromising sleep compromises results — directly.</div></li>
+    <li class="rule-item deload"><div class="rule-dot"></div><div><strong>Week 11 deload is mandatory.</strong> 55% loads, same reps. Your tendons are not muscles — they adapt slower. The deload is when they catch up. Skip it = injury in week 12.</div></li>
+  </ul>
+  <div class="sec-heading">Phase-specific coaching notes</div>
+  <ul class="rule-list">
+    <li class="rule-item info"><div class="rule-dot"></div><div><strong>Week 1 only goal:</strong> Show up every day. That's the entire brief. The fastest way to build momentum after a break is to stack tiny wins — not one heroic session. Win Mon, Tue, Wed, Thu, Fri. That's Phase 1.</div></li>
+    <li class="rule-item info"><div class="rule-dot"></div><div><strong>Weeks 2–5 (Build) — early wins:</strong> The physique won't change visibly yet. The scale might not budge much. The benchmark that matters: your 5km time and your bench number. Track those. They will move.</div></li>
+    <li class="rule-item info"><div class="rule-dot"></div><div><strong>Weeks 6–10 (Load) — compound effect:</strong> This is where most people quit because results plateau visibly on the scale but are accumulating under the surface. Trust the process, watch the lifts, watch the run times. The scale follows.</div></li>
+    <li class="rule-item info"><div class="rule-dot"></div><div><strong>Weeks 12–16 (Peak) — identity shift:</strong> At this point you're not training for the plan — you're an athlete who trains. The shift in identity is the real prize. The strength numbers just confirm it.</div></li>
+  </ul>
+  <div class="sec-heading">Pitfalls — flag these early</div>
+  <ul class="rule-list">
+    <li class="rule-item warn"><div class="rule-dot"></div><div><strong>Ego loading in week 1.</strong> The body feels capable. The tendons are not ready. Adding too much too soon is the single most common reason transformations end at week 3. Control loads. Leave reps in tank.</div></li>
+    <li class="rule-item warn"><div class="rule-dot"></div><div><strong>Skipping leg day because it's uncomfortable.</strong> At 112kg, legs are brutal. Do them anyway. Lower body muscle mass is your primary fat-burning engine.</div></li>
+    <li class="rule-item warn"><div class="rule-dot"></div><div><strong>Scale obsession in month 2.</strong> Weight fluctuates 1.5–3kg daily based on water and glycogen. Weigh once a week, same morning, and use the monthly average. The tape measure never lies.</div></li>
+    <li class="rule-item warn"><div class="rule-dot"></div><div><strong>Stacking sport sessions on training days.</strong> Basketball and football REPLACE cardio — they don't add on top of a full session at a caloric deficit.</div></li>
+    <li class="rule-item warn"><div class="rule-dot"></div><div><strong>Shin splints from running too fast too soon.</strong> Week 1: grass field only. Never consecutive run days. Any shin pain → zero-impact cardio immediately for 5–7 days. Ice shins 15 min post-run as prevention.</div></li>
+  </ul>
+  <div class="sec-heading">Recovery</div>
+  <ul class="rule-list">
+    <li class="rule-item info"><div class="rule-dot"></div><div><strong>Foam roll 10 min post-gym, 3× per week.</strong> Priority: hip flexors, thoracic spine, calves, hamstrings. Tight hip flexors at your height will kill squat depth and running efficiency.</div></li>
+    <li class="rule-item info"><div class="rule-dot"></div><div><strong>3.5L water daily minimum.</strong> 4L on run or sport days. In Agra's summer heat you're sweating heavily — dehydration crashes performance faster than anything.</div></li>
+    <li class="rule-item info"><div class="rule-dot"></div><div><strong>Progress photos on May 4, Jun 4, Jul 4, Aug 4, Aug 31.</strong> Take waist + chest + thigh tape measurements on the same days. This is your evidence. Don't skip these.</div></li>
+  </ul>
+</div>
+
+</div><!-- end content -->
+
+<script>
+// ============ DATE UTILITIES ============
+// Monday May 4, 2026 = Day 1
+const START = new Date(2026, 4, 4); // month is 0-indexed
+
+function addDays(d, n) { const r = new Date(d); r.setDate(r.getDate() + n); return r; }
+function fmtDate(d) { return d.toLocaleDateString('en-IN',{day:'numeric',month:'short'}); }
+
+// ============ MESS MENU (repeating weekly: Mon=0,...Sun=6) ============
+const messMenu = [
+  // 0 = Monday
+  { breakfast:['Bread Butter Jam Tea','own'], lunch:['Chole Boondi Raita Roti Rice Salad','eat'],
+    snacks:['Namkeen Thandai','small'], dinner:['Mix Veg Masoor Dal Roti Rice Salad Milk','eat'] },
+  // 1 = Tuesday
+  { breakfast:['Idli Sambhar Coconut Chutney Tea Cornflakes Milk','eat'], lunch:['Aloo Gobhi Chana Dal Roti Rice Salad','eat'],
+    snacks:['Namkeen Jawa Sauce Tea','skip'], dinner:['Puri Aloo Tamatar Sabji Fried Chilli Rice Kheer Achar','own'] },
+  // 2 = Wednesday
+  { breakfast:['Paw Bhaji Tea','small'], lunch:['Aloo Jeera Kadhi Pakora Roti Rice Salad','eat'],
+    snacks:['Pasta Sauce Tea','skip'], dinner:['Aloo Gazar Mutter Rajma Masala Roti Rice Salad Custard','eat'] },
+  // 3 = Thursday
+  { breakfast:['Kulche Matar Tea','small'], lunch:['Aloo Soyabeen Arhar Dal Roti Rice Salad','eat'],
+    snacks:['Rusk Tea','skip'], dinner:['Mater Paneer Dal Makhani Roti Rice Salad Sweet','eat'] },
+  // 4 = Friday
+  { breakfast:['Tea Samosa With Chutney','own'], lunch:['Rajma Curd Roti Rice Salad','eat'],
+    snacks:['Veg & Dry Poha Sauce Tea','small'], dinner:['Aloo Patta Gobhi Roti Rice Chana Dal Salad Milk','eat'] },
+  // 5 = Saturday
+  { breakfast:['Aloo Sabji Dhai Jalebi Aloo Kachori Tea','own'], lunch:['Kadhi Lal Mirch Achar Roti Rice Salad','small'],
+    snacks:['Sandwich Sauce Tea','skip'], dinner:['Chole Roti Rice Salad','eat'] },
+  // 6 = Sunday
+  { breakfast:['Paneer Paratha Chatni Achar Sauce Tea','eat'], lunch:['Meggi Sauce Coffee','own'],
+    snacks:['Shahi Paneer Arhar Dal Rice Roti Salad Sweet','eat'], dinner:['(Same as snacks / Shahi Paneer)','eat'] },
+];
+
+const verdictStyles = {
+  eat:  { label:'✓ Eat (modified)', color:'var(--green)' },
+  skip: { label:'✗ Skip entirely', color:'var(--red)' },
+  small:{ label:'⚠ Eat small', color:'var(--amber)' },
+  own:  { label:'✗ Skip — eat own', color:'var(--red)' },
+};
+
+function nutTableHtml(date) {
+  const dow = date.getDay();
+  const idx = (dow + 6) % 7;
+  const m = messMenu[idx];
+
+  const rows = [
+    { time:'7:00am', own:'1 scoop whey + 250ml HP milk + 2 boiled eggs', prot:'~56g', verdict:'own', note:'Always — regardless of mess breakfast' },
+    { time:'Breakfast', mess: m.breakfast[0], verdict: m.breakfast[1] },
+    { time:'12:30pm', mess: m.lunch[0], verdict: m.lunch[1] },
+    { time:'5:30pm', own:'100g soyabean boiled (salt+chaat masala+lemon)', prot:'36g', verdict:'own', note:'Your most important own-meal' },
+    { time:'7:30pm', mess: m.dinner[0], verdict: m.dinner[1] },
+    { time:'10:00pm', own:'1 scoop whey OR 250ml HP milk', prot:'18–26g', verdict:'own', note:'Pre-bed — slow absorption' },
+  ];
+
+  let html = '<table class="nut-day-table"><thead><tr><th>Time</th><th>Eat</th><th>Status</th><th>Prot</th></tr></thead><tbody>';
+
+  rows.forEach(r => {
+    if (r.own) {
+      html += `<tr>
+        <td class="meal-time">${r.time}</td>
+        <td class="meal-eat">${r.own}<br><span style="font-size:10px;color:var(--muted)">${r.note||''}</span></td>
+        <td><span style="color:var(--green);font-size:10px">✓ Own meal</span></td>
+        <td class="meal-prot">${r.prot||''}</td>
+      </tr>`;
+    } else {
+      const vs = verdictStyles[r.verdict] || verdictStyles.eat;
+      html += `<tr>
+        <td class="meal-time">${r.time}</td>
+        <td class="meal-eat">${r.mess}</td>
+        <td><span style="color:${vs.color};font-size:10px">${vs.label}</span></td>
+        <td class="meal-prot"></td>
+      </tr>`;
+    }
+  });
+
+  html += '<tr class="day-total-row"><td colspan="2" style="font-size:11px">Est. daily protein</td><td></td><td class="meal-prot" style="color:var(--green)">~150–170g</td></tr>';
+  html += '</tbody></table>';
+  return html;
+}
+
+// ============ PHASE DATA ============
+// 17-week plan:
+// Ph1: Wk 1 (Re-Entry, Full Body 3x)
+// Ph2: Wk 2–5 (Build, Upper/Lower 4x)
+// Ph3: Wk 6–11 (Load, PPL 5x) — Wk 11 = Deload
+// Ph4: Wk 12–16 (Peak, Heavy)
+// Ph5: Wk 17 (Forge, Final)
+const phases = [
+  { num:1, name:'Re-Entry', color:'green', phClass:'ph1', weeks:[1], desc:'Win the week. Not the workout. Full body 3×. Build the habit loop.' },
+  { num:2, name:'Build', color:'blue', phClass:'ph2', weeks:[2,3,4,5], desc:'Upper/Lower 4×. First real benchmarks. Running 3→5km. Leave this phase stronger than ever.' },
+  { num:3, name:'Load', color:'amber', phClass:'ph3', weeks:[6,7,8,9,10,11], desc:'PPL 5×/week. 400m intervals from Wk7. Week 11 = mandatory deload.' },
+  { num:4, name:'Peak', color:'red', phClass:'ph4', weeks:[12,13,14,15,16], desc:'Heavy compounds. 3–5 reps. PR testing Wk15. The athlete body gets built here.' },
+  { num:5, name:'Forge', color:'purple', phClass:'ph5', weeks:[17], desc:'Consolidate. Confirm all PRs. 10km run. Final benchmarks Aug 31.' },
+];
+
+function getPhase(wk) { return phases.find(p => p.weeks.includes(wk)); }
+
+// ============ WEEK SCHEDULE TEMPLATES ============
+function getWeekDays(wkNum) {
+  // Phase 1: Week 1 — Re-Entry Full Body
+  if (wkNum === 1) {
+    return [
+      { type:'full', session:'Full Body A — Re-Entry', detail:'Identity day. Show up. Every rep with full control. Leave 3 reps in tank. This session is about the habit, not the weight.', exs:[['Goblet squat','3×12 @ 16kg KB'],['Bench press','3×8 @ 57.5kg'],['Seated cable row','3×10 @ 40kg'],['DB shoulder press','3×10 @ 14kg'],['Romanian deadlift','3×10 @ 42.5kg'],['Plank hold','3×25s']] },
+      { type:'cardio', session:'Jog/walk intervals — 2.5km', detail:'Grass field. Run 200m, walk 200m. Conversational pace. Time the whole thing. Baseline.', exs:[] },
+      { type:'full', session:'Full Body B', detail:'Hip hinge on RDL — feel the hamstrings load. Core braced. Every exercise done deliberately.', exs:[['Leg press','3×12 @ 85kg'],['Incline DB press','3×10 @ 16kg'],['Lat pulldown','3×10 @ 47.5kg'],['Lateral raises','3×12 @ 8kg'],['Leg curl','3×12'],['Dead bug','3×8 each']] },
+      { type:'sport', session:'Basketball 30–40 min', detail:'Casual play only. Zone 2 effort. Not competitive yet. Just move.', exs:[] },
+      { type:'full', session:'Full Body A (repeat)', detail:'Add 2.5kg upper / 5kg lower ONLY if all Monday reps were completely clean. Otherwise hold exact same weight.', exs:[['Goblet squat','3×12 @ 18kg'],['Bench press','3×8 @ 60kg'],['Seated cable row','3×10 @ 42kg'],['DB shoulder press','3×10 @ 14kg'],['Romanian deadlift','3×10 @ 45kg'],['Plank hold','3×30s']] },
+      { type:'active', session:'Walk + foam roll', detail:'10k step walk. Foam roll: hip flexors + calves + thoracic spine. 15 min. No skipping.', exs:[] },
+      { type:'rest', session:'Full rest', detail:'Walk 8k steps. Eat your protein. Sleep 8 hours. Reflect on winning this week — you showed up 5 days. That\'s the foundation.', exs:[] },
+    ];
+  }
+
+  // Phase 2: Weeks 2–5 — Upper/Lower
+  if (wkNum <= 5) {
+    const wkOff = wkNum - 2; // 0,1,2,3
+    const benchLoad = [65, 67.5, 70, 72.5][wkOff];
+    const rdlLoad = [67.5, 72.5, 77.5, 82.5][wkOff];
+    const squatLoad = [52.5, 57.5, 62.5, 67.5][wkOff];
+    const runDist = ['3km', '3.5km', '4.5km — sub-29 target', '5km — beat your time'][wkOff];
+    return [
+      { type:'strength', session:'Upper A — Push', detail:`Bench ${benchLoad}kg. Rest 2 min on main lifts. Add weight only when you hit top of range 2 sessions in a row.`, exs:[['Bench press',`4×6–8 @ ${benchLoad}kg`],['OHP (barbell)',`3×8 @ ${40+wkOff*2.5}kg`],['Incline DB press',`3×10 @ ${18+wkOff}kg`],['Cable fly (low)','3×12–15'],['Tricep pushdown','3×12'],['Lateral raises','3×15 @ 8–10kg']] },
+      { type:'cardio', session:`Run — ${runDist}`, detail:'Continuous. Breathe through nose where possible. Time every run — this is data.', exs:[] },
+      { type:'strength', session:'Lower A — Squat', detail:`Barbell squat at ${squatLoad}kg. 3s down, 1s up. Feel the depth. Core is a brace, not an afterthought.`, exs:[['Barbell squat',`4×8 @ ${squatLoad}kg`],['Walking lunges','3×10 each'],['Leg press',`3×12 @ ${102.5+wkOff*5}kg`],['Leg curl','3×12'],['Calf raises','4×15'],['Ab wheel / plank','3×max/40s']] },
+      { type:'strength', session:'Lower B — Hinge', detail:`RDL at ${rdlLoad}kg. Feel every hamstring rep. Lock the back. Hinge, not squat.`, exs:[['Romanian deadlift',`4×8 @ ${rdlLoad}kg`],['Sumo deadlift',`3×6 @ ${rdlLoad-5}kg`],['Hip thrust (BB)','3×12 @ 52–70kg'],['Step-ups','3×10 each'],['Seated calf raise','3×15'],['Hanging knee raise','3×10–12']] },
+      { type:'strength', session:'Upper B — Pull', detail:`Chin-ups FIRST — max reps before anything else. Log the number. It will go up.`, exs:[['Chin-ups (max reps)','4×max — LOG IT'],['Barbell row',`4×8 @ ${52.5+wkOff*2.5}kg`],['Seated cable row',`3×10 @ ${52+wkOff*2}kg`],['Face pulls','3×15–20'],['Hammer curl','3×10 each'],['Rear delt fly','3×12']] },
+      { type:'sport', session:'Football 5-a-side / Basketball', detail:'60 min real game effort. This is your cardio session. Play hard.', exs:[] },
+      { type:'rest', session:'Full rest', detail:'Walk 8–10k steps. Foam roll. Eat protein. You\'re building something here.', exs:[] },
+    ];
+  }
+
+  // Phase 3: Weeks 6–11 — PPL (Wk 11 = Deload)
+  if (wkNum <= 11) {
+    const isDeload = wkNum === 11;
+    const wkOff = wkNum - 6; // 0–5
+    const benchLoad = isDeload ? 47.5 : [75, 77.5, 80, 82.5, 82.5, 50][wkOff];
+    const squatLoad = isDeload ? 50 : [80, 82.5, 87.5, 90, 92.5, 55][wkOff];
+    const rdlLoad = isDeload ? 55 : [92.5, 95, 97.5, 100, 102.5, 57.5][wkOff];
+    const runType = isDeload ? 'Easy 4km recovery jog' : (wkNum % 2 === 0 ? `${5+Math.floor(wkOff/2)+1}km steady run` : `${6+wkOff}×400m intervals`);
+
+    return [
+      { type:isDeload?'deload':'strength', session:isDeload?'Push Day — DELOAD':'Push Day', detail:isDeload?`DELOAD WEEK. ${benchLoad}kg bench — 55% of working weight. Form check, nothing more.`:`Bench ${benchLoad}kg. RPE 7–8. Leave one rep in the tank.`, exs:[['Bench press',`4×${isDeload?'6':'5–6'} @ ${benchLoad}kg`],['OHP (barbell)',`4×6 @ ${isDeload?32:50+wkOff*2.5}kg`],['Incline DB press',`3×10 @ ${isDeload?16:24+wkOff}kg`],['Cable fly','3×12–15'],['Skull crushers',`3×10 @ ${isDeload?16:22+wkOff*2}kg`],['Tricep pushdown','3×12'],['Lateral raises','4×15 @ 10–12kg']] },
+      { type:'cardio', session:runType, detail:isDeload?'Easy pace only. No pushing. This is recovery, not performance.':'Track your time. You are getting faster. Trust it.', exs:[] },
+      { type:isDeload?'deload':'strength', session:isDeload?'Pull Day — DELOAD':'Pull Day', detail:isDeload?'Light weights. Mind-muscle. Not to failure on anything.':'Chin-ups first. Add weight if ≥8 BW reps — +5kg belt.', exs:[['Chin-ups',`${isDeload?'2×5 BW — not to failure':'4×max reps'}`],['Pendlay row',`4×${isDeload?'6 easy':5–6} @ ${isDeload?45:62.5+wkOff*2.5}kg`],['Seated row',`3×10 @ ${isDeload?40:62+wkOff*2}kg`],['Face pulls','3×20'],['Barbell curl',`3×10 @ ${isDeload?22:32+wkOff}kg`],['Hammer curl','3×10 each']] },
+      { type:'sport', session:'Basketball / Football', detail:isDeload?'Easy 30 min only during deload week. Light movement.':'Full intensity. You should notice how much better your cardio is.', exs:[] },
+      { type:isDeload?'deload':'strength', session:isDeload?'Leg Day — DELOAD':'Leg Day', detail:isDeload?`DELOAD. Squat ${squatLoad}kg. Perfect form only.`:`Squat ${squatLoad}kg. RDL ${rdlLoad}kg. This is the engine.`, exs:[['Barbell squat',`4×5 @ ${squatLoad}kg`],['Romanian deadlift',`4×6 @ ${rdlLoad}kg`],['Leg press',`3×12 @ ${isDeload?82.5:122.5+wkOff*5}kg`],['Bulgarian split squat',`3×8 each @ ${isDeload?0:10+wkOff*2}kg`],['Leg curl','3×12'],['Calf raise','4×20'],['Hanging leg raise','3×12–15']] },
+      { type:'active', session:isDeload?'Walk + measurements':'Long walk / Easy run', detail:isDeload?'Take month measurements + progress photo during deload week.':'Easy effort. Keep steps up. Let the body move.', exs:[] },
+      { type:'rest', session:'Full rest', detail:isDeload?'Full rest. Tendons are catching up. This week is doing more work than any heavy session.':'Sleep 8+ hours. You\'ve earned it.', exs:[] },
+    ];
+  }
+
+  // Phase 4: Weeks 12–16 — Peak
+  if (wkNum <= 16) {
+    const isPR = wkNum === 15;
+    const wkOff = wkNum - 12; // 0–4
+    const benchLoad = [82.5, 85, 87.5, 90, 87.5][wkOff];
+    const squatLoad = [95, 97.5, 102.5, 107.5, 105][wkOff];
+    const rdlLoad = [107.5, 110, 112.5, 115, 112.5][wkOff];
+    const runType = isPR ? '10km ATTEMPT — the only goal is to finish' : `${8+wkOff}km tempo run`;
+
+    return [
+      { type:'strength', session:isPR?'Push Day — BENCH PR TEST':'Push — Peak Strength', detail:isPR?'Warm up perfectly. Test 90kg × 5. This is what you built for.':(`Bench ${benchLoad}kg. 3–5 rep strength range. No ego — full range of motion.`), exs:[['Bench press',`4×4–5 @ ${benchLoad}kg${isPR?' (PR TEST)':''}`],['OHP',`4×5 @ ${57.5+wkOff*2.5}kg`],['Incline DB press','3×8 @ 28–32kg'],['Cable fly','3×15'],['Skull crushers','3×8'],['Lateral raises','4×15 @ 12kg']] },
+      { type:'cardio', session:runType, detail:isPR?'25 laps on the grass field. Run at conversation pace. The distance is the victory.':'Sub-50 min for 8km. You have the fitness. Run through it.', exs:[] },
+      { type:'strength', session:isPR?'Pull Day — CHIN-UP PR TEST':'Pull — Peak Strength', detail:isPR?'Max chin-up test first set. Target: 12 reps. Everything else works around it.':`Weighted chins if ≥10 BW reps. Add 5–7.5kg. Build the back.`, exs:[['Chin-ups',`${isPR?'1×MAX TEST then 3×working':'4×max (weighted if ≥10 BW)'}`],['Pendlay row',`4×5 @ ${75+wkOff*2.5}kg`],['Seated row',`3×8 @ ${70+wkOff*2}kg`],['Face pulls','3×20'],['DB curl','3×10 @ 18–22kg'],['Hammer curl','3×12 each']] },
+      { type:'sport', session:'Football / Basketball', detail:'Full game. Notice how different your body feels vs May. This is real.', exs:[] },
+      { type:'strength', session:isPR?'Leg Day — SQUAT PR TEST':'Legs — Peak Strength', detail:isPR?`Squat ${squatLoad}kg × 5. RDL ${rdlLoad}kg × 5. These are your PRs.`:`Squat ${squatLoad}kg. You belong here.`, exs:[['Barbell squat',`4×5 @ ${squatLoad}kg${isPR?' (PR TEST)':''}`],['Romanian deadlift',`4×5 @ ${rdlLoad}kg${isPR?' (PR TEST)':''}`],['Leg press',`3×10 @ ${130+wkOff*5}kg`],['Bulgarian split squat','3×6 each @ 20kg'],['Leg curl','3×10'],['Calf raise','4×20']] },
+      { type:'active', session:isPR?'Walk + full measurements':'Long walk / Active rest', detail:isPR?'Record ALL PRs. Progress photos. Compare to May 4. You are not the same person.':'Easy movement. Recover for next week.', exs:[] },
+      { type:'rest', session:'Full rest', detail:'This phase is demanding. Rest is training. Sleep 8 hours minimum.', exs:[] },
+    ];
+  }
+
+  // Phase 5: Week 17 — Forge
+  return [
+    { type:'strength', session:'Push Day — Confirm PRs', detail:'Final push session. Confirm 90kg bench. The new baseline.', exs:[['Bench press','4×5 @ 90kg (confirm)'],['OHP','4×5 @ 67.5kg'],['Incline DB press','3×10 @ 30kg'],['Cable fly','3×15'],['Tricep work','3×12'],['Lateral raises','4×15']] },
+    { type:'cardio', session:'Final 10km run', detail:'Aug 25. 25 laps on the grass field. Start slow, finish strong. This is your proof.', exs:[] },
+    { type:'strength', session:'Pull Day — Confirm PRs', detail:'Confirm 12+ chin-up target. Heavy rows. The back you\'ve built.', exs:[['Chin-ups','4×max (confirm 12+)'],['Pendlay row','4×5 @ 80kg'],['Seated row','3×8 @ 75kg'],['Face pulls','3×20'],['Curl variation','3×10']] },
+    { type:'sport', session:'Football / Basketball', detail:'Play the best game of your life. Compare to May. This is the finish line.', exs:[] },
+    { type:'strength', session:'Leg Day — Confirm PRs', detail:'Final leg session. Confirm squat 110kg, RDL 117.5kg. This is who you are now.', exs:[['Barbell squat','4×5 @ 110kg (confirm)'],['Romanian deadlift','4×5 @ 117.5kg (confirm)'],['Leg press','3×10 @ 150kg'],['Bulgarian split squat','3×6 each @ 22kg'],['Calf raise','4×20']] },
+    { type:'active', session:'FINAL MEASUREMENTS + PHOTOS', detail:'Aug 30. Measure everything. Compare to May 4. Write down what happened to you in 17 weeks.', exs:[] },
+    { type:'rest', session:'Aug 31 — The New Baseline', detail:'Rest. Reflect. You\'re 100–103kg, running 10km, benching 90kg. Plan the next chapter. This is just the foundation.', exs:[] },
+  ];
+}
+
+// ============ RENDER ============
+const badgeClass = { strength:'badge-strength', cardio:'badge-cardio', sport:'badge-sport', rest:'badge-rest', active:'badge-active', full:'badge-full', deload:'badge-deload' };
+const badgeLabel = { strength:'Strength', cardio:'Cardio', sport:'Sport', rest:'Rest', active:'Active', full:'Full Body', deload:'Deload' };
+const dayNames7 = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const typeShort = { strength:'STR', cardio:'RUN', sport:'SPORT', rest:'REST', active:'WALK', full:'FULL', deload:'DELOAD' };
+const typeRibbonClass = { strength:'wr-strength', cardio:'wr-cardio', sport:'wr-sport', rest:'wr-rest', active:'wr-active', full:'wr-full', deload:'wr-strength' };
+
+function renderDayCard(day, date, dayIdx) {
+  const dName = dayNames7[dayIdx];
+  const bc = badgeClass[day.type] || 'badge-rest';
+  const bl = badgeLabel[day.type] || 'Rest';
+  const dateNum = date.getDate();
+
+  if (day.type === 'rest' || day.type === 'active') {
+    return `<div class="day-card">
+      <div class="day-card-head">
+        <div style="display:flex;align-items:center">
+          <div class="day-num">${dateNum}</div>
+          <div class="day-info"><div class="day-name">${dName} · ${fmtDate(date)}</div><div class="day-date">${day.session}</div></div>
+        </div>
+        <span class="day-type-badge ${bc}">${bl}</span>
+      </div>
+      <div class="rest-card-body">
+        <div><strong>${day.session}</strong><p class="rest-text">${day.detail}</p>
+        <div style="margin-top:8px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);padding-top:8px"><span style="color:var(--amber);font-size:10px;font-family:'DM Mono',monospace">NUTRITION</span></div>
+        ${nutTableHtml(date)}
+        </div>
+      </div>
+    </div>`;
+  }
+
+  let exHtml = '';
+  if (day.exs && day.exs.length > 0) {
+    exHtml = `<ul class="exercise-list">${day.exs.map(([n,s])=>`<li><span class="ex-name">${n}</span><span class="ex-sets">${s}</span></li>`).join('')}</ul>`;
+  }
+
+  return `<div class="day-card">
+    <div class="day-card-head">
+      <div style="display:flex;align-items:center">
+        <div class="day-num">${dateNum}</div>
+        <div class="day-info"><div class="day-name">${dName} · ${fmtDate(date)}</div><div class="day-date">${day.session}</div></div>
+      </div>
+      <span class="day-type-badge ${bc}">${bl}</span>
+    </div>
+    <div class="day-card-body">
+      <div class="session-name">${day.session}</div>
+      <div class="session-detail">${day.detail}</div>
+      ${exHtml}
+      <div style="margin-top:10px;padding-top:8px;border-top:1px solid var(--border)">
+        <div style="font-size:10px;color:var(--amber);font-family:'DM Mono',monospace;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.4px">Nutrition — today</div>
+        ${nutTableHtml(date)}
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderWeek(wkNum) {
+  const phase = getPhase(wkNum);
+  const weekStartDate = addDays(START, (wkNum-1)*7);
+  const days = getWeekDays(wkNum);
+  const bColor = phase.color;
+
+  let ribbon = '';
+  for (let i = 0; i < 7; i++) {
+    const d = addDays(weekStartDate, i);
+    const day = days[i];
+    const rc = typeRibbonClass[day.type] || 'wr-rest';
+    const ts = typeShort[day.type] || '—';
+    ribbon += `<div class="wr-day ${rc}"><div class="wr-d">${dayNames7[i]}</div><div class="wr-dt">${d.getDate()}</div><div class="wr-t">${ts}</div></div>`;
+  }
+
+  const weekEndDate = addDays(weekStartDate, 6);
+
+  let html = `
+    <div class="phase-banner pb-${bColor}">
+      <div class="pb-num">${wkNum}</div>
+      <div>
+        <div class="pb-name">Week ${wkNum} — ${phase.name.toUpperCase()} · ${fmtDate(weekStartDate)} – ${fmtDate(weekEndDate)}</div>
+        <div class="pb-desc">${phase.desc}</div>
+      </div>
+    </div>
+    <div class="week-ribbon">${ribbon}</div>
+    <div class="days-grid">${days.map((d,i)=>renderDayCard(d,addDays(weekStartDate,i),i)).join('')}</div>
+  `;
+  return html;
+}
+
+function buildWeekSelector() {
+  const sel = document.getElementById('weekSelector');
+  let html = '';
+  for (let w = 1; w <= 17; w++) {
+    const ph = getPhase(w);
+    const phC = `ph${ph.num}`;
+    const d = addDays(START, (w-1)*7);
+    html += `<button class="wk-btn ${phC}${w===1?' active':''}" onclick="selectWeek(${w},this)">W${w} · ${fmtDate(d)}</button>`;
+  }
+  sel.innerHTML = html;
+}
+
+function selectWeek(wk, btn) {
+  document.querySelectorAll('.wk-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('weekContent').innerHTML = renderWeek(wk);
+}
+
+function showPane(id, btn) {
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('pane-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// INIT
+buildWeekSelector();
+document.getElementById('weekContent').innerHTML = renderWeek(1);
+
+function showPaneMobile(id) {
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn,.bn-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('pane-'+id).classList.add('active');
+  document.querySelectorAll('[data-pane="'+id+'"]').forEach(b=>b.classList.add('active'));
+  window.scrollTo(0,0);
+}
+</script>
+
+<nav class="bottom-nav">
+  <button class="bn-btn active" data-pane="weeks" onclick="showPaneMobile('weeks')"><span class="bn-icon">📅</span><span>Plan</span></button>
+  <button class="bn-btn" data-pane="workouts" onclick="showPaneMobile('workouts')"><span class="bn-icon">🏋️</span><span>Workouts</span></button>
+  <button class="bn-btn" data-pane="strength" onclick="showPaneMobile('strength')"><span class="bn-icon">💪</span><span>Lifts</span></button>
+  <button class="bn-btn" data-pane="cardio" onclick="showPaneMobile('cardio')"><span class="bn-icon">🏃</span><span>Cardio</span></button>
+  <button class="bn-btn" data-pane="nutrition" onclick="showPaneMobile('nutrition')"><span class="bn-icon">🥗</span><span>Food</span></button>
+  <button class="bn-btn" data-pane="milestones" onclick="showPaneMobile('milestones')"><span class="bn-icon">🎯</span><span>Goals</span></button>
+  <button class="bn-btn" data-pane="rules" onclick="showPaneMobile('rules')"><span class="bn-icon">⚡</span><span>Rules</span></button>
+</nav>
+</body>
+</html>
