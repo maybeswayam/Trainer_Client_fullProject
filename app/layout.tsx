@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   title: "SAM. — Transformation OS",
   description:
     "17 weeks. 5 phases. One identity shift. A precise plan + tracker for strength, cardio and nutrition.",
-  generator: "v0.app",
+  ,
 }
 
 export const viewport: Viewport = {
