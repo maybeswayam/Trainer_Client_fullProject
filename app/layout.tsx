@@ -26,8 +26,7 @@ const bebas = Bebas_Neue({
 export const metadata: Metadata = {
   title: "SAM. — Transformation OS",
   description:
-    "17 weeks. 5 phases. One identity shift. A precise plan + tracker for strength, cardio and nutrition.",
-  ,
+    "17 weeks. 5 phases. One identity shift. A precise plan + tracker for strength, cardio and nutrition."
 }
 
 export const viewport: Viewport = {
