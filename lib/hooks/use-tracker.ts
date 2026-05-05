@@ -73,25 +73,59 @@ function readStorage(): TrackerData {
   }
 }
 
-function writeStorage(data: TrackerData) {
+async function writeStorage(data: TrackerData) {
   if (typeof window === "undefined") return
   localStorage.setItem(KEY, JSON.stringify(data))
   // Notify other components
   window.dispatchEvent(new CustomEvent("tracker:update"))
+  // Also sync to server
+  try {
+    await fetch("/api/tracker", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    })
+  } catch (err) {
+    console.error("Failed to sync tracker data to server", err)
+  }
 }
 
 export function useTracker() {
-  const [data, setData] = useState<TrackerData>(() => defaultData())
+  const [data, setData] = useState<TrackerData>(() => readStorage())
   const [hydrated, setHydrated] = useState(false)
 
   useEffect(() => {
-    setData(readStorage())
-    setHydrated(true)
+    let active = true
+
+    const loadData = async () => {
+      try {
+        const res = await fetch("/api/tracker")
+        if (res.ok) {
+          const serverData = await res.json()
+          if (active) {
+            setData({ ...defaultData(), ...serverData })
+            localStorage.setItem(KEY, JSON.stringify(serverData))
+            setHydrated(true)
+          }
+          return
+        }
+      } catch (e) {
+        console.warn("Could not fetch server data, falling back to local storage")
+      }
+      
+      if (active) {
+        setData(readStorage())
+        setHydrated(true)
+      }
+    }
+
+    loadData()
 
     const handler = () => setData(readStorage())
     window.addEventListener("tracker:update", handler)
     window.addEventListener("storage", handler)
     return () => {
+      active = false
       window.removeEventListener("tracker:update", handler)
       window.removeEventListener("storage", handler)
     }
