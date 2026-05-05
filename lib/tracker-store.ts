@@ -4,6 +4,7 @@
 // ═══════════════════════════════════════════
 
 import { START_DATE, END_DATE, TOTAL_DAYS } from "@/lib/data/phases"
+export { START_DATE, END_DATE, TOTAL_DAYS }
 
 // ── Types ──────────────────────────────────
 export type WeightEntry = { date: string; val: number }
