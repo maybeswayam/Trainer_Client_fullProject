@@ -6,10 +6,12 @@ type AuthState = { authenticated: boolean }
 
 const AuthCtx = createContext<{
   auth: AuthState
+  checkCredentials: (user: string, pass: string) => boolean
   login: (user: string, pass: string) => boolean
   logout: () => void
 }>({
   auth: { authenticated: false },
+  checkCredentials: () => false,
   login: () => false,
   logout: () => {},
 })
@@ -31,14 +33,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setReady(true)
   }, [])
 
+  const checkCredentials = useCallback((user: string, pass: string): boolean => {
+    return user === VALID_USER && pass === VALID_PASS
+  }, [])
+
   const login = useCallback((user: string, pass: string): boolean => {
-    if (user === VALID_USER && pass === VALID_PASS) {
+    if (checkCredentials(user, pass)) {
       localStorage.setItem(SESSION_KEY, "true")
       setAuth({ authenticated: true })
       return true
     }
     return false
-  }, [])
+  }, [checkCredentials])
 
   const logout = useCallback(() => {
     localStorage.removeItem(SESSION_KEY)
@@ -49,7 +55,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   if (!ready) return null
 
   return (
-    <AuthCtx.Provider value={{ auth, login, logout }}>
+    <AuthCtx.Provider value={{ auth, checkCredentials, login, logout }}>
       {children}
     </AuthCtx.Provider>
   )
