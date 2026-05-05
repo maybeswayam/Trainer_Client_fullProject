@@ -13,11 +13,11 @@ function AuthGate({ children }: { children: React.ReactNode }) {
   if (!auth.authenticated) return <LoginScreen />
 
   return (
-    <div className="min-h-screen flex bg-background text-foreground">
+    <div className="h-[100dvh] flex overflow-hidden bg-background text-foreground">
       <Sidebar />
-      <div className="flex-1 min-w-0 flex flex-col lg:pl-[240px]">
+      <div className="flex-1 min-w-0 flex flex-col lg:pl-[240px] overflow-y-auto overflow-x-hidden">
         <Topbar />
-        <main className="flex-1 min-w-0 pb-24 lg:pb-12">{children}</main>
+        <main className="flex-1 min-w-0 pb-[calc(4rem+env(safe-area-inset-bottom))] lg:pb-12">{children}</main>
       </div>
       <MobileNav />
     </div>

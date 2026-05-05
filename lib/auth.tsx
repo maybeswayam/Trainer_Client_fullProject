@@ -26,14 +26,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (typeof window === "undefined") return
-    const stored = sessionStorage.getItem(SESSION_KEY)
+    const stored = localStorage.getItem(SESSION_KEY)
     if (stored === "true") setAuth({ authenticated: true })
     setReady(true)
   }, [])
 
   const login = useCallback((user: string, pass: string): boolean => {
     if (user === VALID_USER && pass === VALID_PASS) {
-      sessionStorage.setItem(SESSION_KEY, "true")
+      localStorage.setItem(SESSION_KEY, "true")
       setAuth({ authenticated: true })
       return true
     }
@@ -41,7 +41,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const logout = useCallback(() => {
-    sessionStorage.removeItem(SESSION_KEY)
+    localStorage.removeItem(SESSION_KEY)
     setAuth({ authenticated: false })
   }, [])
 

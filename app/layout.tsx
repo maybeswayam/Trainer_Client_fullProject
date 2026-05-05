@@ -42,7 +42,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`dark bg-background ${dmSans.variable} ${dmMono.variable} ${bebas.variable}`}>
-      <body className="font-sans antialiased min-h-screen bg-background text-foreground">
+      <body className="font-sans antialiased h-[100dvh] overflow-hidden bg-background text-foreground">
         <AppShell>{children}</AppShell>
         <Toaster
           theme="dark"
