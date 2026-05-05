@@ -4,8 +4,14 @@ import type React from "react"
 import { Sidebar } from "./sidebar"
 import { Topbar } from "./topbar"
 import { MobileNav } from "./mobile-nav"
+import { AuthProvider, useAuth } from "@/lib/auth"
+import { LoginScreen } from "./login-screen"
 
-export function AppShell({ children }: { children: React.ReactNode }) {
+function AuthGate({ children }: { children: React.ReactNode }) {
+  const { auth } = useAuth()
+
+  if (!auth.authenticated) return <LoginScreen />
+
   return (
     <div className="min-h-screen flex bg-background text-foreground">
       <Sidebar />
@@ -15,5 +21,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </div>
       <MobileNav />
     </div>
+  )
+}
+
+export function AppShell({ children }: { children: React.ReactNode }) {
+  return (
+    <AuthProvider>
+      <AuthGate>{children}</AuthGate>
+    </AuthProvider>
   )
 }
