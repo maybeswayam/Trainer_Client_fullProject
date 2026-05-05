@@ -4,9 +4,12 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { PLAN_NAV, TRACKER_NAV, type NavItem } from "@/lib/data/navigation"
 import { cn } from "@/lib/utils"
+import { useAuth } from "@/lib/auth"
+import { LogOut } from "lucide-react"
 
 export function Sidebar() {
   const pathname = usePathname()
+  const { logout } = useAuth()
 
   return (
     <aside
@@ -37,7 +40,16 @@ export function Sidebar() {
         <div className="font-mono-ui text-[10px] text-muted-foreground uppercase tracking-[0.15em] mb-1">
           May 4 → Aug 31
         </div>
-        <div className="font-display text-base tracking-wider">17 WEEKS · 5 PHASES</div>
+        <div className="flex items-center justify-between">
+          <div className="font-display text-base tracking-wider">17 WEEKS · 5 PHASES</div>
+          <button
+            onClick={logout}
+            title="Sign out"
+            className="text-faint hover:text-brand-red transition-colors"
+          >
+            <LogOut className="w-3.5 h-3.5" />
+          </button>
+        </div>
       </div>
     </aside>
   )
