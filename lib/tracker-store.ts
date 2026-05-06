@@ -46,6 +46,9 @@ export type TrackerData = {
 // ── Storage ────────────────────────────────
 const KEY = "samForge_v3"
 
+// Global var to prevent spamming fetch
+let hasHydratedFromServer = false
+
 function defaultData(): TrackerData {
   return {
     weights: [],
@@ -62,6 +65,20 @@ function defaultData(): TrackerData {
 
 export function getData(): TrackerData {
   if (typeof window === "undefined") return defaultData()
+  
+  if (!hasHydratedFromServer) {
+    hasHydratedFromServer = true
+    fetch("/api/tracker", { cache: "no-store" })
+      .then(res => res.ok ? res.json() : null)
+      .then(serverData => {
+        if (serverData) {
+          localStorage.setItem(KEY, JSON.stringify(serverData))
+          window.dispatchEvent(new Event("tracker-updated"))
+        }
+      })
+      .catch(e => console.warn("Failed to sync from server:", e))
+  }
+
   try {
     const raw = localStorage.getItem(KEY)
     return raw ? (JSON.parse(raw) as TrackerData) : defaultData()
@@ -73,6 +90,14 @@ export function getData(): TrackerData {
 export function saveData(d: TrackerData): void {
   if (typeof window === "undefined") return
   localStorage.setItem(KEY, JSON.stringify(d))
+  
+  window.dispatchEvent(new Event("tracker-updated"))
+  
+  fetch("/api/tracker", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(d),
+  }).catch(e => console.warn("Failed to save to server:", e))
 }
 
 export function resetData(): void {

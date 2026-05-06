@@ -33,7 +33,12 @@ export default function LogTodayPage() {
   const [liftReps, setLiftReps] = useState("")
 
   const reload = useCallback(() => setData(getData()), [])
-  useEffect(() => { reload() }, [reload])
+  useEffect(() => { 
+    reload()
+    const handleUpdate = () => reload()
+    window.addEventListener("tracker-updated", handleUpdate)
+    return () => window.removeEventListener("tracker-updated", handleUpdate)
+  }, [reload])
 
   if (!data) return null
 
