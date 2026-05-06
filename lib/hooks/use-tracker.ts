@@ -99,12 +99,14 @@ export function useTracker() {
 
     const loadData = async () => {
       try {
-        const res = await fetch("/api/tracker")
+        const res = await fetch("/api/tracker", { cache: "no-store", next: { tags: ["tracker-data"] } })
         if (res.ok) {
           const serverData = await res.json()
           if (active) {
             setData({ ...defaultData(), ...serverData })
             localStorage.setItem(KEY, JSON.stringify(serverData))
+            // Always notify listeners that storage changed (fixes heatmap hydration)
+            window.dispatchEvent(new CustomEvent("tracker:update"))
             setHydrated(true)
           }
           return
