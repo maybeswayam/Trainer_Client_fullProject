@@ -14,7 +14,12 @@ import {
 
 export default function NutritionPage() {
   const [data, setData] = useState<TrackerData | null>(null)
-  useEffect(() => { setData(getData()) }, [])
+  useEffect(() => {
+    setData(getData())
+    const handleUpdate = () => setData(getData())
+    window.addEventListener("tracker-updated", handleUpdate)
+    return () => window.removeEventListener("tracker-updated", handleUpdate)
+  }, [])
   if (!data) return null
 
   // Last 7 days stats

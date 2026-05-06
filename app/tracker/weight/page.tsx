@@ -17,7 +17,12 @@ export default function WeightPage() {
   const [data, setData] = useState<TrackerData | null>(null)
   const [range, setRange] = useState<"all" | "4w" | "2w">("all")
 
-  useEffect(() => { setData(getData()) }, [])
+  useEffect(() => {
+    setData(getData())
+    const handleUpdate = () => setData(getData())
+    window.addEventListener("tracker-updated", handleUpdate)
+    return () => window.removeEventListener("tracker-updated", handleUpdate)
+  }, [])
   if (!data) return null
 
   const weights = [...data.weights].sort((a, b) => a.date.localeCompare(b.date))

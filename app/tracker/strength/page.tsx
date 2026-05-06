@@ -17,7 +17,12 @@ export default function StrengthPage() {
   const [data, setData] = useState<TrackerData | null>(null)
   const [activeLift, setActiveLift] = useState("bench")
 
-  useEffect(() => { setData(getData()) }, [])
+  useEffect(() => {
+    setData(getData())
+    const handleUpdate = () => setData(getData())
+    window.addEventListener("tracker-updated", handleUpdate)
+    return () => window.removeEventListener("tracker-updated", handleUpdate)
+  }, [])
   if (!data) return null
 
   // Lift progress rows

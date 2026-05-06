@@ -22,7 +22,12 @@ export default function CardioPage() {
   const [surface, setSurface] = useState("grass")
 
   const reload = useCallback(() => setData(getData()), [])
-  useEffect(() => { reload() }, [reload])
+  useEffect(() => {
+    reload()
+    const handleUpdate = () => reload()
+    window.addEventListener("tracker-updated", handleUpdate)
+    return () => window.removeEventListener("tracker-updated", handleUpdate)
+  }, [reload])
   if (!data) return null
 
   const runs = [...data.runs].sort((a, b) => a.date.localeCompare(b.date))
