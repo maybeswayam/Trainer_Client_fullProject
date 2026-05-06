@@ -5,19 +5,29 @@ import { PageContainer, SectionLabel } from "@/components/ui-kit/section"
 import { SurfaceCard } from "@/components/ui-kit/cards"
 import { GhostButton } from "@/components/ui-kit/form-fields"
 import {
+  getData,
+  resetData,
   fmtDate,
   daysSinceStart,
   START_DATE,
   dateStr,
+  type TrackerData,
 } from "@/lib/tracker-store"
-import { useTracker } from "@/lib/hooks/use-tracker"
 import { toast } from "sonner"
 import { Trash2 } from "lucide-react"
 
 export default function HistoryPage() {
-  const { data, reset, hydrated } = useTracker()
+  const [data, setData] = useState<TrackerData | null>(null)
 
-  if (!hydrated || !data) return null
+  const reload = useCallback(() => setData(getData()), [])
+  useEffect(() => {
+    reload()
+    const handleUpdate = () => reload()
+    window.addEventListener("tracker-updated", handleUpdate)
+    return () => window.removeEventListener("tracker-updated", handleUpdate)
+  }, [reload])
+
+  if (!data) return null
 
   const logs = [...data.dailyLogs].sort((a, b) => b.date.localeCompare(a.date))
 
@@ -70,8 +80,9 @@ export default function HistoryPage() {
 
   function handleReset() {
     if (confirm("Reset ALL data? This cannot be undone.")) {
-      reset()
+      resetData()
       toast.success("All data cleared. Fresh start! 🔄")
+      reload()
     }
   }
 

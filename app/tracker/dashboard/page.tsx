@@ -208,6 +208,9 @@ export default function DashboardPage() {
 
   useEffect(() => {
     setData(getData())
+    const handleUpdate = () => setData(getData())
+    window.addEventListener("tracker-updated", handleUpdate)
+    return () => window.removeEventListener("tracker-updated", handleUpdate)
   }, [])
 
   if (!data) return null
