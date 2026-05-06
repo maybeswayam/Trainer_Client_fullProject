@@ -103,6 +103,12 @@ export function saveData(d: TrackerData): void {
 export function resetData(): void {
   if (typeof window === "undefined") return
   localStorage.removeItem(KEY)
+  window.dispatchEvent(new Event("tracker-updated"))
+  fetch("/api/tracker", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(defaultData()),
+  }).catch(e => console.warn("Failed to reset server:", e))
 }
 
 // ── Date Utilities ─────────────────────────
