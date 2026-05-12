@@ -1,38 +1,34 @@
 "use client"
 
-import { useEffect, useState, use } from "react"
-import { useTracker } from "@/lib/hooks/use-tracker"
+import { use } from "react"
+import { DEMO_CLIENTS, CLIENT_PROGRESS, getPhaseColor } from "@/lib/data/demo-clients"
 import { PageContainer, PageHeader, SectionLabel } from "@/components/shared/ui-kit/section"
 import { StatCard, SurfaceCard } from "@/components/shared/ui-kit/cards"
 import { LineChart } from "@/components/shared/ui-kit/line-chart"
 import {
-  calcStreak,
-  getBestLift,
-  getDaysSinceStart,
-  getCurrentWeek,
-  getCurrentPhaseIndex,
-  getGlobalProgress,
-  fmtDate,
   LIFT_TARGETS,
   PHASE_COLORS,
   TOTAL_DAYS,
   START_DATE,
   dateStr,
-  type TrackerData,
+  fmtDate,
 } from "@/lib/tracker-store"
-import { PHASES } from "@/lib/data/phases"
-import { Flame, Zap, TrendingDown, Dumbbell, Activity, ShieldAlert } from "lucide-react"
+import { Flame, Zap, TrendingDown, Dumbbell, Target, Trophy, Footprints, Droplets, Beef } from "lucide-react"
 import Link from "next/link"
 
-function Heatmap({ data }: { data: TrackerData }) {
+// Generate heatmap data from workouts
+function generateHeatmapData(workouts: { date: string; type: string }[]) {
   const intensityMap: Record<string, number> = {}
-  data.dailyLogs.forEach((l) => {
-    let score = 0
-    if (l.session && l.session !== "Rest Day") score += 2
-    if (l.checklist) score += l.checklist.length
-    intensityMap[l.date] = Math.min(4, score)
+  workouts.forEach((w) => {
+    const baseScore = w.type === "Rest Day" ? 0 : 3
+    intensityMap[w.date] = Math.min(4, baseScore + Math.floor(Math.random() * 2))
   })
+  return intensityMap
+}
 
+function Heatmap({ workouts }: { workouts: { date: string; type: string }[] }) {
+  const intensityMap = generateHeatmapData(workouts)
+  
   const end = new Date(2026, 7, 31)
   const cells: { date: string; lvl: number; label: string }[][] = []
   const cur = new Date(START_DATE)
@@ -84,18 +80,21 @@ function Heatmap({ data }: { data: TrackerData }) {
   )
 }
 
-function BodyProgress({ currentWeight, startWeight = 112, targetWeight = 100 }: { currentWeight: number, startWeight?: number, targetWeight?: number }) {
+function BodyProgress({ currentWeight, startWeight, targetWeight }: { currentWeight: number, startWeight: number, targetWeight: number }) {
   const lost = startWeight - currentWeight
+  const total = startWeight - targetWeight
+  const progress = total > 0 ? Math.min(100, Math.round((lost / total) * 100)) : 0
+  
   const stages = [
-    { label: "Start", weight: `${startWeight} kg`, scale: 1.18, color: "var(--brand-red)", opacity: 0.6 },
+    { label: "Start", weight: `${startWeight} KG`, scale: 1.18, color: "var(--brand-red)", opacity: 0.6 },
     {
       label: "Now",
-      weight: `${currentWeight.toFixed(1)} kg`,
-      scale: Math.max(0.85, 1.18 - lost * 0.015),
+      weight: `${currentWeight.toFixed(1)} KG`,
+      scale: Math.max(0.85, 1.18 - lost * 0.02),
       color: "var(--brand-amber)",
       opacity: 0.85,
     },
-    { label: "Goal", weight: `${targetWeight} kg`, scale: 0.88, color: "var(--brand-green)", opacity: 1 },
+    { label: "Goal", weight: `${targetWeight} KG`, scale: 0.88, color: "var(--brand-green)", opacity: 1 },
   ]
 
   return (
@@ -125,11 +124,44 @@ function BodyProgress({ currentWeight, startWeight = 112, targetWeight = 100 }: 
   )
 }
 
-function LiftProgressRows({ data }: { data: TrackerData }) {
+function LiftProgressRows({ lifts, clientId }: { lifts: { date: string; exercise: string; weight: number; reps: number; sets: number }[], clientId: string }) {
+  // Build best lift map from client's lift history
+  const bestLifts: Record<string, number> = {}
+  lifts.forEach((l) => {
+    const key = l.exercise.toLowerCase().replace(/\s+/g, "")
+    if (!bestLifts[key] || l.weight > bestLifts[key]) {
+      bestLifts[key] = l.weight
+    }
+  })
+
+  // Map exercise names to LIFT_TARGETS keys
+  const exerciseMap: Record<string, string> = {
+    "benchpress": "bench",
+    "squat": "squat",
+    "deadlift": "rdl",
+    "rdl": "rdl",
+    "ohp": "ohp",
+    "chin-ups": "chinups",
+    "chinups": "chinups",
+    "push-ups": "pushups",
+    "pushups": "pushups",
+    "barbellrow": "row",
+  }
+
   return (
     <div className="space-y-1">
       {Object.entries(LIFT_TARGETS).map(([key, def]) => {
-        const best = getBestLift(data, key) ?? def.start
+        // Find best lift for this exercise
+        let best = def.start
+        Object.entries(exerciseMap).forEach(([exName, targetKey]) => {
+          if (targetKey === key && bestLifts[exName]) {
+            best = Math.max(best, bestLifts[exName])
+          }
+        })
+        
+        // Also check direct matches
+        if (bestLifts[key]) best = Math.max(best, bestLifts[key])
+
         const target = def.targets[4]
         const range = target - def.start
         const pct = range > 0 ? Math.min(100, Math.round(((best - def.start) / range) * 100)) : 0
@@ -165,8 +197,9 @@ function LiftProgressRows({ data }: { data: TrackerData }) {
   )
 }
 
-function PhaseTimeline() {
-  const phIdx = getCurrentPhaseIndex()
+function PhaseTimeline({ currentPhase }: { currentPhase: string }) {
+  const phIdx = PHASE_COLORS.findIndex(p => p.name === currentPhase)
+  
   return (
     <div className="flex gap-0 mb-4">
       {PHASE_COLORS.map((ph, i) => {
@@ -197,47 +230,130 @@ function PhaseTimeline() {
   )
 }
 
+// Recent workouts section
+function RecentWorkouts({ workouts }: { workouts: { date: string; type: string; duration: number; intensity: number }[] }) {
+  const recent = [...workouts].reverse().slice(0, 5)
+  
+  if (recent.length === 0) {
+    return (
+      <div className="text-center py-8 text-muted-foreground font-mono-ui text-sm">
+        No workouts logged yet
+      </div>
+    )
+  }
+  
+  return (
+    <div className="space-y-2">
+      {recent.map((w, i) => (
+        <div key={i} className="flex items-center justify-between py-2.5 border-b border-border last:border-0">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-brand-green/10 flex items-center justify-center">
+              <Dumbbell size={14} className="text-brand-green" />
+            </div>
+            <div>
+              <div className="text-[13px] font-medium">{w.type}</div>
+              <div className="font-mono-ui text-[10px] text-muted-foreground">{fmtDate(w.date)}</div>
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="font-mono-ui text-[12px]">{w.duration} min</div>
+            <div className="font-mono-ui text-[10px] text-muted-foreground">
+              Intensity: {w.intensity}/10
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+// Measurements comparison
+function MeasurementsComparison({ measurements }: { measurements: { date: string; waist?: number; chest?: number; hip?: number; thigh?: number; arm?: number }[] }) {
+  if (measurements.length < 2) {
+    return (
+      <div className="text-center py-8 text-muted-foreground font-mono-ui text-sm">
+        Need at least 2 measurement entries to compare
+      </div>
+    )
+  }
+  
+  const first = measurements[0]
+  const last = measurements[measurements.length - 1]
+  
+  const items = [
+    { label: "Waist", first: first.waist, last: last.waist, unit: "cm", goodIfDown: true },
+    { label: "Chest", first: first.chest, last: last.chest, unit: "cm", goodIfDown: false },
+    { label: "Hips", first: first.hip, last: last.hip, unit: "cm", goodIfDown: true },
+    { label: "Thigh", first: first.thigh, last: last.thigh, unit: "cm", goodIfDown: true },
+    { label: "Arms", first: first.arm, last: last.arm, unit: "cm", goodIfDown: false },
+  ].filter(item => item.first !== undefined && item.last !== undefined)
+
+  return (
+    <div className="space-y-2">
+      {items.map((item, i) => {
+        const diff = (item.last || 0) - (item.first || 0)
+        const isGood = item.goodIfDown ? diff < 0 : diff > 0
+        const color = Math.abs(diff) < 0.5 ? "var(--muted-foreground)" : isGood ? "var(--brand-green)" : "var(--brand-red)"
+        
+        return (
+          <div key={i} className="flex items-center justify-between py-2 border-b border-border last:border-0">
+            <span className="font-mono-ui text-[12px] text-muted-foreground">{item.label}</span>
+            <div className="flex items-center gap-4">
+              <span className="font-mono-ui text-[11px] text-muted-foreground">{item.first} {item.unit}</span>
+              <span className="text-muted-foreground">→</span>
+              <span className="font-mono-ui text-[12px]">{item.last} {item.unit}</span>
+              <span className="font-mono-ui text-[11px] min-w-[50px] text-right" style={{ color }}>
+                {diff > 0 ? "+" : ""}{diff.toFixed(1)}
+              </span>
+            </div>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
 export default function TrainerClientDashboardPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params)
-  const { data: realData, hydrated } = useTracker()
-
-  if (!hydrated || !realData) return null
-
-  const id = resolvedParams.id
-  const isSam = id === "sam"
-
-  // Base the data on realData but tweaked for testing/demo
-  const data = { ...realData }
-  let startWeight = 112
+  const id = resolvedParams.id.toLowerCase()
   
-  if (!isSam) {
-    if (id === "jessica") startWeight = 68
-    if (id === "marcus") startWeight = 95
-    if (id === "elena") startWeight = 60
-    if (id === "david") startWeight = 85
-
-    // Tweak local weights a bit
-    data.weights = realData.weights.map(w => ({
-      ...w,
-      val: w.val - (112 - startWeight) + (Math.sin(w.date.length) * 2) 
-    }))
+  // Get client data from demo data
+  const client = DEMO_CLIENTS[id]
+  const progress = CLIENT_PROGRESS[id]
+  
+  if (!client || !progress) {
+    return (
+      <PageContainer>
+        <div className="flex flex-col items-center justify-center h-[60vh] gap-4">
+          <div className="text-xl font-display">Client Not Found</div>
+          <Link href="/trainer/dashboard" className="text-brand-green hover:underline font-mono-ui text-sm">
+            ← Back to Dashboard
+          </Link>
+        </div>
+      </PageContainer>
+    )
   }
 
-  const weights = [...data.weights].sort((a, b) => a.date.localeCompare(b.date))
-  const currentWeight = weights.length ? weights[weights.length - 1].val : startWeight
-  const lost = (startWeight - currentWeight).toFixed(1)
-  const { streak, best } = calcStreak(data)
-  const daysElapsed = Math.max(1, getDaysSinceStart() + 1)
-  const daysTrained = new Set(
-    data.dailyLogs.filter((l) => l.session && l.session !== "Rest Day").map((l) => l.date)
-  ).size
-  const progress = getGlobalProgress()
-  const phIdx = getCurrentPhaseIndex()
-  const phase = PHASES[phIdx]
-  const week = getCurrentWeek()
-  const weightChartData = [{ date: "May 4", weight: startWeight }, ...weights.map((w) => ({ date: fmtDate(w.date), weight: w.val }))]
+  // Calculate stats from progress data
+  const weights = progress.weights
+  const currentWeight = weights.length > 0 ? weights[weights.length - 1].value : client.startWeight
+  const lost = (client.startWeight - currentWeight).toFixed(1)
+  const daysElapsed = Math.max(1, client.week * 7)
+  const totalDays = 120 // 17 weeks
+  const progressPct = Math.min(100, Math.round((daysElapsed / totalDays) * 100))
+  
+  // Format weight chart data
+  const weightChartData = weights.map((w) => ({ 
+    date: fmtDate(w.date), 
+    weight: w.value 
+  }))
 
-  const nameCapitalized = id.charAt(0).toUpperCase() + id.slice(1)
+  // Calculate start and end dates based on join date
+  const joinDate = new Date(client.joinDate)
+  const endDate = new Date(joinDate)
+  endDate.setDate(endDate.getDate() + totalDays)
+  const startDateStr = joinDate.toLocaleDateString("en-IN", { day: "numeric", month: "short" })
+  const endDateStr = endDate.toLocaleDateString("en-IN", { day: "numeric", month: "short" })
 
   return (
     <PageContainer>
@@ -248,7 +364,7 @@ export default function TrainerClientDashboardPage({ params }: { params: Promise
       </div>
       
       <PageHeader 
-        title={`${nameCapitalized}'s Dashboard`} 
+        title={`${client.name.split(" ")[0]}'s Dashboard`} 
         subtitle="Read-Only Client View" 
         actions={
           <Link href={`/trainer/client/${id}/logs`} className="px-3 py-1.5 bg-surface-2 border border-border rounded-md font-mono-ui text-[10px] uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors">
@@ -257,57 +373,169 @@ export default function TrainerClientDashboardPage({ params }: { params: Promise
         }
       />
 
+      {/* Progress Bar */}
       <div className="mb-6 bg-surface border border-border rounded-xl px-5 py-3">
         <div className="flex justify-between font-mono-ui text-[10px] text-muted-foreground uppercase mb-2">
-          <span>May 4</span>
-          <span>{progress}% complete · Day {daysElapsed}/{TOTAL_DAYS}</span>
-          <span>Aug 31</span>
+          <span>{startDateStr}</span>
+          <span>{progressPct}% complete · Day {daysElapsed}/{totalDays}</span>
+          <span>{endDateStr}</span>
         </div>
         <div className="h-[3px] bg-faint rounded-full relative">
-          <div className="h-full rounded-full transition-all duration-1000" style={{ width: `${progress}%`, background: "linear-gradient(90deg, var(--brand-green), var(--brand-blue))" }} />
+          <div className="h-full rounded-full transition-all duration-1000" style={{ width: `${progressPct}%`, background: "linear-gradient(90deg, var(--brand-green), var(--brand-blue))" }} />
         </div>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <StatCard title="Current Phase" value={phase.name} sub={`Week ${week} of 17`} icon={<Zap style={{ color: "var(--brand-amber)" }} />} />
-        <StatCard title="Total Lost" value={`${lost} kg`} sub={`Current: ${currentWeight.toFixed(1)}kg`} icon={<TrendingDown style={{ color: "var(--brand-green)" }} />} />
-        <StatCard title="Workout Days" value={daysTrained} sub={`Out of ${daysElapsed} days`} icon={<Dumbbell style={{ color: "var(--brand-blue)" }} />} />
-        <StatCard title="Current Streak" value={streak} sub={`Best: ${best} days`} icon={<Flame style={{ color: "var(--brand-orange)" }} />} />
+      {/* Phase Timeline */}
+      <div className="mb-6">
+        <PhaseTimeline currentPhase={client.phase} />
       </div>
 
+      {/* Main Stats */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <StatCard 
+          title="Current Phase" 
+          value={client.phase} 
+          sub={`Week ${client.week} of 17`} 
+          icon={<Zap style={{ color: getPhaseColor(client.phase) }} />} 
+        />
+        <StatCard 
+          title="Weight Lost" 
+          value={`${lost} kg`} 
+          sub={`Current: ${currentWeight.toFixed(1)}kg`} 
+          icon={<TrendingDown style={{ color: "var(--brand-green)" }} />} 
+        />
+        <StatCard 
+          title="Total Workouts" 
+          value={client.totalWorkouts} 
+          sub={`${client.workoutsThisWeek} this week`} 
+          icon={<Dumbbell style={{ color: "var(--brand-blue)" }} />} 
+        />
+        <StatCard 
+          title="Current Streak" 
+          value={client.streak} 
+          sub={`${client.compliance}% compliance`} 
+          icon={<Flame style={{ color: client.streak > 5 ? "var(--brand-orange)" : "var(--muted-foreground)" }} />} 
+        />
+      </div>
+
+      {/* Secondary Stats */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <StatCard 
+          title="Avg Steps" 
+          value={client.avgSteps.toLocaleString()} 
+          sub="daily average" 
+          icon={<Footprints style={{ color: "var(--brand-amber)" }} />} 
+        />
+        <StatCard 
+          title="Avg Protein" 
+          value={`${client.avgProtein}g`} 
+          sub="daily average" 
+          icon={<Beef style={{ color: "var(--brand-red)" }} />} 
+        />
+        <StatCard 
+          title="Cardio" 
+          value={`${client.cardioMinutes}`} 
+          sub="minutes this week" 
+          icon={<Target style={{ color: "var(--brand-purple)" }} />} 
+        />
+        <StatCard 
+          title="Best Lifts" 
+          value={`${client.benchPR}/${client.squatPR}/${client.deadliftPR}`} 
+          sub="B/S/D PRs (kg)" 
+          icon={<Trophy style={{ color: "var(--brand-green)" }} />} 
+        />
+      </div>
+
+      {/* Activity & Body Transformation */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
         <div>
           <SectionLabel title="Activity Heatmap" />
           <SurfaceCard>
-            <Heatmap data={data} />
+            <Heatmap workouts={progress.workouts} />
           </SurfaceCard>
         </div>
         <div>
           <SectionLabel title="Body Transformation" />
           <SurfaceCard>
-            <BodyProgress currentWeight={currentWeight} startWeight={startWeight} targetWeight={startWeight - 12} />
+            <BodyProgress 
+              currentWeight={currentWeight} 
+              startWeight={client.startWeight} 
+              targetWeight={client.targetWeight} 
+            />
           </SurfaceCard>
         </div>
       </div>
 
+      {/* Weight Trend & Strength */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-10">
         <div>
           <SectionLabel title="Weight Trend" />
           <SurfaceCard>
-            <LineChart 
-              data={weightChartData} 
-              series={[{ key: "weight", label: "Weight", color: "var(--brand-green)" }]} 
-              yDomain={["dataMin - 1", "dataMax + 1"]} 
-            />
+            {weightChartData.length > 1 ? (
+              <LineChart 
+                data={weightChartData} 
+                series={[{ key: "weight", label: "Weight", color: "var(--brand-green)" }]} 
+                yDomain={["dataMin - 1", "dataMax + 1"]} 
+              />
+            ) : (
+              <div className="flex items-center justify-center h-[200px] text-muted-foreground font-mono-ui text-sm">
+                Need more data points for chart
+              </div>
+            )}
           </SurfaceCard>
         </div>
         <div>
           <SectionLabel title="Strength Milestones" />
           <SurfaceCard>
-            <LiftProgressRows data={data} />
+            <LiftProgressRows lifts={progress.lifts} clientId={id} />
           </SurfaceCard>
         </div>
       </div>
+
+      {/* Recent Workouts & Measurements */}
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-10">
+        <div>
+          <SectionLabel title="Recent Workouts" />
+          <SurfaceCard>
+            <RecentWorkouts workouts={progress.workouts} />
+          </SurfaceCard>
+        </div>
+        <div>
+          <SectionLabel title="Body Measurements" />
+          <SurfaceCard>
+            <MeasurementsComparison measurements={progress.measurements} />
+          </SurfaceCard>
+        </div>
+      </div>
+
+      {/* Trainer Notes */}
+      {client.notes && (
+        <div className="mb-8">
+          <SectionLabel title="Trainer Notes" />
+          <SurfaceCard>
+            <div className="flex items-start gap-3">
+              <div className="w-8 h-8 rounded-lg bg-brand-amber/10 flex items-center justify-center shrink-0">
+                <span className="text-brand-amber text-sm">📝</span>
+              </div>
+              <p className="text-[14px] leading-relaxed text-foreground/90">{client.notes}</p>
+            </div>
+          </SurfaceCard>
+        </div>
+      )}
+
+      {/* Tags */}
+      {client.tags.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {client.tags.map((tag) => (
+            <span 
+              key={tag} 
+              className="px-2.5 py-1 rounded-full bg-surface-2 border border-border font-mono-ui text-[10px] uppercase tracking-wider text-muted-foreground"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+      )}
     </PageContainer>
   )
 }
