@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next"
 import { Bebas_Neue, DM_Sans, DM_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
-import { AppShell } from "@/components/layout/app-shell"
 import { Toaster } from "sonner"
 
 const dmSans = DM_Sans({
@@ -43,7 +42,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`dark bg-background ${dmSans.variable} ${dmMono.variable} ${bebas.variable}`}>
       <body className="font-sans antialiased h-[100dvh] overflow-hidden bg-background text-foreground">
-        <AppShell>{children}</AppShell>
+        {children}
         <Toaster
           theme="dark"
           position="bottom-right"

@@ -44,7 +44,7 @@ export type TrackerData = {
 }
 
 // ── Storage ────────────────────────────────
-const KEY = "samForge_v3"
+const KEY = "samForge_v4"
 
 // Global var to prevent spamming fetch
 let hasHydratedFromServer = false
@@ -81,7 +81,9 @@ export function getData(): TrackerData {
 
   try {
     const raw = localStorage.getItem(KEY)
-    return raw ? (JSON.parse(raw) as TrackerData) : defaultData()
+    if (!raw) return defaultData()
+    const parsed = JSON.parse(raw)
+    return { ...defaultData(), ...parsed }
   } catch {
     return defaultData()
   }
