@@ -3,19 +3,9 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/lib/auth"
-import { Loader2, Lock, ArrowRight, Eye, EyeOff, UserCircle } from "lucide-react"
+import { Loader2, Lock, ArrowRight, Eye, EyeOff, ShieldCheck } from "lucide-react"
 
-interface LoginScreenProps {
-  returnTo?: string
-  title?: string
-  subtitle?: string
-}
-
-export function LoginScreen({ 
-  returnTo,
-  title = "SAM.",
-  subtitle = "Transformation OS"
-}: LoginScreenProps) {
+export function TrainerLoginScreen() {
   const router = useRouter()
   const { login, checkCredentials } = useAuth()
   const [user, setUser] = useState("")
@@ -35,23 +25,22 @@ export function LoginScreen({
       setError("Invalid credentials")
       setShaking(true)
       setTimeout(() => setShaking(false), 500)
+    } else if (result.user?.role !== "trainer") {
+      setError("Access denied. Trainer credentials required.")
+      setShaking(true)
+      setTimeout(() => setShaking(false), 500)
     } else {
       setIsLoading(true)
       setTimeout(() => {
         login(user.trim(), pass)
-        // Navigate based on role
-        if (result.user?.role === "trainer") {
-          router.push(returnTo || "/trainer/dashboard")
-        } else {
-          router.push(returnTo || "/dashboard")
-        }
+        router.push("/trainer/dashboard")
       }, 1500)
     }
   }
 
   const fillDemoCredentials = () => {
-    setUser("sam")
-    setPass("client123")
+    setUser("krishna")
+    setPass("trainer123")
   }
 
   return (
@@ -60,12 +49,12 @@ export function LoginScreen({
       <div
         aria-hidden
         className="pointer-events-none absolute top-[-15%] left-[-10%] w-[500px] h-[500px] rounded-full blur-[120px] opacity-30"
-        style={{ background: "radial-gradient(circle, rgba(184,245,160,0.12) 0%, transparent 70%)" }}
+        style={{ background: "radial-gradient(circle, rgba(245,200,66,0.12) 0%, transparent 70%)" }}
       />
       <div
         aria-hidden
         className="pointer-events-none absolute bottom-[-10%] right-[-5%] w-[400px] h-[400px] rounded-full blur-[100px] opacity-20"
-        style={{ background: "radial-gradient(circle, rgba(200,168,245,0.12) 0%, transparent 70%)" }}
+        style={{ background: "radial-gradient(circle, rgba(184,245,160,0.1) 0%, transparent 70%)" }}
       />
 
       {/* Grain overlay */}
@@ -74,30 +63,33 @@ export function LoginScreen({
       <div className="relative w-full max-w-[380px] mx-4">
         {/* Logo */}
         <div className="text-center mb-10">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4" style={{ background: "var(--brand-amber-dim)", border: "1px solid rgba(245,200,66,0.2)" }}>
+            <ShieldCheck className="w-8 h-8 text-brand-amber" strokeWidth={1.5} />
+          </div>
           <h1
-            className="font-display text-[72px] leading-none tracking-wider"
+            className="font-display text-4xl leading-none tracking-wider"
             style={{
-              background: "linear-gradient(180deg, #f0ede8 30%, rgba(184,245,160,0.6) 100%)",
+              background: "linear-gradient(180deg, #f0ede8 30%, rgba(245,200,66,0.7) 100%)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
             }}
           >
-            {title}
+            TRAINER PORTAL
           </h1>
-          <div className="font-mono-ui text-[10px] text-muted-foreground uppercase tracking-[0.3em] mt-1">
-            {subtitle}
+          <div className="font-mono-ui text-[10px] text-muted-foreground uppercase tracking-[0.3em] mt-2">
+            Transform OS - Professional Access
           </div>
         </div>
 
         {/* Card or Loading state */}
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-10 animate-in fade-in zoom-in-95 duration-500">
-            <Loader2 className="w-5 h-5 text-primary animate-spin mb-4" strokeWidth={1.5} />
+            <Loader2 className="w-5 h-5 text-brand-amber animate-spin mb-4" strokeWidth={1.5} />
             <div className="font-mono-ui text-[10px] text-muted-foreground uppercase tracking-[0.2em] animate-pulse">
-              Authenticating
+              Authenticating Trainer
             </div>
             <div className="w-[120px] h-[2px] bg-border mt-6 rounded-full overflow-hidden">
-              <div className="h-full bg-primary animate-[load_1.5s_ease-in-out_forwards]" />
+              <div className="h-full bg-brand-amber animate-[load_1.5s_ease-in-out_forwards]" />
             </div>
           </div>
         ) : (
@@ -106,10 +98,10 @@ export function LoginScreen({
             className={`bg-surface border border-border rounded-xl p-6 transition-transform ${shaking ? "animate-[shake_0.4s_ease-in-out]" : ""}`}
           >
             <div className="flex items-center gap-2 mb-5">
-              <div className="w-7 h-7 rounded-md flex items-center justify-center" style={{ background: "var(--brand-green-dim)", border: "1px solid rgba(184,245,160,0.15)" }}>
-                <Lock className="w-3.5 h-3.5" style={{ color: "var(--brand-green)" }} strokeWidth={2} />
+              <div className="w-7 h-7 rounded-md flex items-center justify-center" style={{ background: "var(--brand-amber-dim)", border: "1px solid rgba(245,200,66,0.15)" }}>
+                <Lock className="w-3.5 h-3.5" style={{ color: "var(--brand-amber)" }} strokeWidth={2} />
               </div>
-              <span className="font-mono-ui text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Private Access</span>
+              <span className="font-mono-ui text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Trainer Access Only</span>
             </div>
 
             <div className="space-y-3">
@@ -119,10 +111,10 @@ export function LoginScreen({
                   type="text"
                   value={user}
                   onChange={(e) => setUser(e.target.value)}
-                  placeholder="username"
+                  placeholder="krishna"
                   autoComplete="username"
                   autoFocus
-                  className="w-full bg-background border border-border rounded-md px-3 py-2.5 text-[13px] text-foreground placeholder:text-faint focus:outline-none focus:border-primary/40 transition-colors"
+                  className="w-full bg-background border border-border rounded-md px-3 py-2.5 text-[13px] text-foreground placeholder:text-faint focus:outline-none focus:border-brand-amber/40 transition-colors"
                 />
               </div>
               <div>
@@ -134,7 +126,7 @@ export function LoginScreen({
                     onChange={(e) => setPass(e.target.value)}
                     placeholder="Enter password"
                     autoComplete="current-password"
-                    className="w-full bg-background border border-border rounded-md px-3 py-2.5 pr-10 text-[13px] text-foreground placeholder:text-faint focus:outline-none focus:border-primary/40 transition-colors"
+                    className="w-full bg-background border border-border rounded-md px-3 py-2.5 pr-10 text-[13px] text-foreground placeholder:text-faint focus:outline-none focus:border-brand-amber/40 transition-colors"
                   />
                   <button
                     type="button"
@@ -156,7 +148,7 @@ export function LoginScreen({
 
             <button
               type="submit"
-              className="w-full mt-5 flex items-center justify-center gap-2 bg-primary text-primary-foreground font-medium text-[13px] px-4 py-2.5 rounded-md hover:bg-primary/90 active:scale-[0.98] transition-all"
+              className="w-full mt-5 flex items-center justify-center gap-2 bg-brand-amber text-primary-foreground font-medium text-[13px] px-4 py-2.5 rounded-md hover:bg-brand-amber/90 active:scale-[0.98] transition-all"
             >
               Enter <ArrowRight className="w-4 h-4" strokeWidth={2} />
             </button>
@@ -166,12 +158,12 @@ export function LoginScreen({
               <button
                 type="button"
                 onClick={fillDemoCredentials}
-                className="w-full text-center font-mono-ui text-[9px] uppercase tracking-wider text-muted-foreground hover:text-primary transition-colors py-1"
+                className="w-full text-center font-mono-ui text-[9px] uppercase tracking-wider text-muted-foreground hover:text-brand-amber transition-colors py-1"
               >
                 Use demo credentials
               </button>
               <div className="text-center font-mono-ui text-[8px] text-faint mt-1">
-                sam / client123
+                krishna / trainer123
               </div>
             </div>
           </form>
@@ -179,14 +171,14 @@ export function LoginScreen({
 
         {/* Footer */}
         <div className="text-center mt-6 font-mono-ui text-[9px] text-faint uppercase tracking-[0.2em]">
-          17 weeks - 5 phases - one identity shift
+          Manage clients - Track progress - Build champions
         </div>
 
         {/* Back to portal link */}
         <div className="text-center mt-4">
           <a 
             href="/" 
-            className="font-mono-ui text-[10px] uppercase tracking-wider text-muted-foreground hover:text-primary transition-colors"
+            className="font-mono-ui text-[10px] uppercase tracking-wider text-muted-foreground hover:text-brand-amber transition-colors"
           >
             Back to Portal Selection
           </a>

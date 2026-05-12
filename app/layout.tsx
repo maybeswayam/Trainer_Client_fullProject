@@ -23,9 +23,9 @@ const bebas = Bebas_Neue({
 })
 
 export const metadata: Metadata = {
-  title: "SAM. — Transformation OS",
+  title: "Transform OS - Professional Fitness Management Platform",
   description:
-    "17 weeks. 5 phases. One identity shift. A precise plan + tracker for strength, cardio and nutrition."
+    "The ultimate fitness management platform for trainers and clients. Track workouts, monitor progress, and achieve transformation goals with precision."
 }
 
 export const viewport: Viewport = {

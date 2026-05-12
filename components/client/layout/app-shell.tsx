@@ -8,9 +8,16 @@ import { AuthProvider, useAuth } from "@/lib/auth"
 import { LoginScreen } from "./login-screen"
 
 function AuthGate({ children }: { children: React.ReactNode }) {
-  const { auth } = useAuth()
+  const { auth, isClient, isTrainer } = useAuth()
 
-  if (!auth.authenticated) return <LoginScreen />
+  // Not authenticated - show login
+  if (!auth.authenticated) {
+    return <LoginScreen />
+  }
+
+  // Authenticated as trainer trying to access client area - still allow (they can view)
+  // but could redirect them to trainer portal
+  // For demo purposes, we allow trainers to also view the client portal
 
   return (
     <div className="h-[100dvh] flex overflow-hidden bg-background text-foreground">
