@@ -3,13 +3,19 @@
 import { TrainerSidebar } from "./trainer-sidebar"
 import { TrainerTopbar } from "./trainer-topbar"
 import { AuthProvider, useAuth } from "@/lib/auth"
-import { LoginScreen } from "@/components/client/layout/login-screen"
+import { TrainerLoginScreen } from "./trainer-login-screen"
 
 function AuthGate({ children }: { children: React.ReactNode }) {
-  const { auth } = useAuth()
+  const { auth, isTrainer } = useAuth()
 
+  // Not authenticated at all
   if (!auth?.authenticated) {
-    return <LoginScreen />
+    return <TrainerLoginScreen />
+  }
+
+  // Authenticated but not as trainer - still show login to get trainer credentials
+  if (!isTrainer) {
+    return <TrainerLoginScreen />
   }
 
   return (
