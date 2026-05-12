@@ -208,16 +208,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const checkCredentials = useCallback((username: string, password: string): { valid: boolean; user: User | null } => {
     const normalizedUsername = username.toLowerCase().trim()
     
+    // Debug logging for production troubleshooting
+    if (typeof window !== "undefined") {
+      console.log("[v0] Auth check - Username:", normalizedUsername)
+      console.log("[v0] Auth check - Available trainers:", Object.keys(TRAINERS))
+      console.log("[v0] Auth check - Available clients:", Object.keys(CLIENTS))
+    }
+    
     // Check trainers
-    if (TRAINERS[normalizedUsername] && TRAINERS[normalizedUsername].password === password) {
-      return { valid: true, user: TRAINERS[normalizedUsername].data }
+    const trainer = TRAINERS[normalizedUsername]
+    if (trainer && trainer.password === password) {
+      console.log("[v0] Auth check - Trainer match found")
+      return { valid: true, user: trainer.data }
     }
     
     // Check clients
-    if (CLIENTS[normalizedUsername] && CLIENTS[normalizedUsername].password === password) {
-      return { valid: true, user: CLIENTS[normalizedUsername].data }
+    const client = CLIENTS[normalizedUsername]
+    if (client && client.password === password) {
+      console.log("[v0] Auth check - Client match found")
+      return { valid: true, user: client.data }
     }
     
+    console.log("[v0] Auth check - No match found")
     return { valid: false, user: null }
   }, [])
 
@@ -261,7 +273,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 }
 
 export function useAuth() {
-  return useContext(AuthCtx)
+  const context = useContext(AuthCtx)
+  
+  // Debug: Check if context is the default (meaning AuthProvider is missing)
+  if (typeof window !== "undefined" && context.login.toString().includes("() => false")) {
+    console.error("[v0] WARNING: useAuth is using default context. AuthProvider may not be wrapping the app correctly!")
+  }
+  
+  return context
 }
 
 // Helper to get trainer's clients
