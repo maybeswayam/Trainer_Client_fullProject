@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next"
 import { Bebas_Neue, DM_Sans, DM_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
+import { AuthProvider } from "@/lib/auth"
 import "./globals.css"
 import { Toaster } from "sonner"
 
@@ -42,7 +43,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`dark bg-background ${dmSans.variable} ${dmMono.variable} ${bebas.variable}`}>
       <body className="font-sans antialiased h-[100dvh] overflow-hidden bg-background text-foreground">
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
         <Toaster
           theme="dark"
           position="bottom-right"
